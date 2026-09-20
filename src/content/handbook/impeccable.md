@@ -16,7 +16,7 @@ featured: false
 addedAt: "2026-09-18"
 ---
 
-# impeccable · 详细教程
+## impeccable · 详细教程
 
 ## 是什么
 
