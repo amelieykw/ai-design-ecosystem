@@ -69,7 +69,7 @@ const assetsLayout = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/assets-layout' }),
   schema: z.object({
     ...baseFields,
-    typeScale: z.array(z.object({ step: z.string(), px: z.number() })).optional(),
+    typeScale: z.array(z.object({ step: z.string(), px: z.number().int() })).optional(),
     grid: z.object({ cols: z.number().int(), gutter: z.string() }).optional(),
   }),
 })
@@ -79,7 +79,7 @@ const assetsMotion = defineCollection({
   schema: z.object({
     ...baseFields,
     curves: z.array(z.object({ name: z.string(), css: z.string() })).optional(),
-    durations: z.array(z.object({ name: z.string(), ms: z.number() })).optional(),
+    durations: z.array(z.object({ name: z.string(), ms: z.number().int() })).optional(),
   }),
 })
 
