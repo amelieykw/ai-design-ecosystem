@@ -1,0 +1,76 @@
+---
+// 工具卡片:handbook 列表的数据驱动卡片
+// 状态圆点颜色由 status 映射到 token
+const { tool } = Astro.props
+
+const statusColor = {
+  '已装': 'var(--color-status-installed)',
+  '未装': 'var(--color-status-missing)',
+  '按需': 'var(--color-status-optional)',
+}[tool.data.status]
+---
+
+<a href={`/handbook/${tool.id}/`} class="tool-card">
+  <div class="tool-meta">
+    <span class="layer-badge">{tool.data.layer}</span>
+    <span class="status-dot" style={`background: ${statusColor}`} title={tool.data.status}></span>
+  </div>
+  <div class="tool-name">{tool.data.title}</div>
+  <div class="tool-purpose">{tool.data.purpose}</div>
+  <div class="tool-tags">
+    {tool.data.tags.slice(0, 3).map((t) => <span class="tag">#{t}</span>)}
+  </div>
+</a>
+
+<style>
+.tool-card {
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  text-decoration: none;
+  color: var(--color-text-primary);
+  display: block;
+  transition: transform var(--duration-base) var(--ease-out),
+              box-shadow var(--duration-base) var(--ease-out);
+}
+.tool-card:hover,
+.tool-card:focus-visible {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+.tool-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+.layer-badge {
+  font-size: var(--font-small);
+  color: var(--color-text-secondary);
+}
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.tool-name {
+  font-family: var(--font-serif);
+  font-size: var(--font-h4);
+  margin-bottom: var(--space-2);
+}
+.tool-purpose {
+  font-size: var(--font-small);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-3);
+}
+.tool-tags {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+.tag {
+  font-size: var(--font-small);
+  color: var(--color-text-secondary);
+}
+</style>

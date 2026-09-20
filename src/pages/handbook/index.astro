@@ -1,0 +1,59 @@
+---
+import { getCollection } from 'astro:content'
+import ToolCard from '@/components/handbook/ToolCard.astro'
+
+const tools = await getCollection('handbook')
+const sorted = tools.sort((a, b) => a.data.title.localeCompare(b.data.title))
+---
+
+<html lang="zh-CN">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>目录手册 · AI 设计生态仓库</title>
+		<style is:global>
+			@import '../../styles/global.css';
+		</style>
+	</head>
+	<body>
+		<header class="page-header">
+			<a href="/" class="back" aria-label="返回首页">←</a>
+			<h1>目录手册</h1>
+			<span class="count">{tools.length} 个工具</span>
+		</header>
+		<main class="tool-grid">
+			{sorted.map((tool) => <ToolCard tool={tool} />)}
+		</main>
+	</body>
+</html>
+
+<style>
+.page-header {
+	padding: var(--space-6) var(--space-8);
+	display: flex;
+	align-items: center;
+	gap: var(--space-4);
+	border-bottom: 1px solid var(--color-border);
+}
+.back {
+	text-decoration: none;
+	color: var(--color-text-primary);
+	font-size: var(--font-h4);
+}
+.page-header h1 {
+	font-size: var(--font-h3);
+}
+.count {
+	margin-left: auto;
+	font-size: var(--font-small);
+	color: var(--color-text-secondary);
+}
+.tool-grid {
+	padding: var(--space-8);
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+	gap: var(--space-4);
+	max-width: var(--container-max);
+	margin: 0 auto;
+}
+</style>
