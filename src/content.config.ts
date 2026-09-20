@@ -1,6 +1,11 @@
 import { defineCollection, z } from 'astro:content'
 import { glob } from 'astro/loaders'
 
+/**
+ * 约定:assets-* 系列的结构化字段(palette/pairing/typeScale 等)为 optional,
+ * 支持"渐进补全"——正文 md 先行,结构化数据后续补充。
+ * 但渲染层(详情页主展示区)依赖这些字段,填数据时(Task 9/V2)应尽量给全。
+ */
 // 共用基础字段(SPEC §5.1)
 const baseFields = {
   name: z.string(),
@@ -8,7 +13,7 @@ const baseFields = {
   description: z.string(),
   tags: z.array(z.string()).max(10),
   featured: z.boolean().default(false),
-  addedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  addedAt: z.string().date(),
 }
 
 // handbook 集合(SPEC §5.2)

@@ -18,4 +18,14 @@ addedAt: "2026-09-18"
 
 # impeccable · 详细教程
 
-正文占位。
+## 是什么
+
+确定性反模式检测,61 条无 LLM 规则 + 24 命令闭环。
+
+## 安装
+
+见 frontmatter `install` 字段的命令。
+
+## 什么时候用
+
+写完 UI 代码后跑 `/impeccable audit` 做终检;全局 hook 已生效时每次编辑自动扫。
