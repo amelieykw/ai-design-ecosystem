@@ -1,5 +1,6 @@
 import { defineCollection, z } from 'astro:content'
 import { glob } from 'astro/loaders'
+import { LAYERS } from '@/lib/layers'
 
 /**
  * 约定:assets-* 系列的结构化字段(palette/pairing/typeScale 等)为 optional,
@@ -21,7 +22,8 @@ const handbook = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/handbook' }),
   schema: z.object({
     ...baseFields,
-    layer: z.enum(['①规范', '②审美', '③知识', '④资产', '⑤流程', '⑥底座']),
+    // 枚举从 LAYERS 单一事实源运行时生成(与 UI 组件共用)
+    layer: z.enum(LAYERS.map((l) => l.id) as [string, ...string[]]),
     status: z.enum(['已装', '未装', '按需']),
     version: z.string().optional(),
     purpose: z.string(),

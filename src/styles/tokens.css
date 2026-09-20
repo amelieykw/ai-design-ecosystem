@@ -3,12 +3,22 @@
   --color-text-primary: #1a1a1a;
   --color-text-secondary: #6b6b6b;
   --color-bg-primary: #faf9f6;
+  --color-surface: #fffdf8;      /* 卡片纸白:与米白底形成微差,替代纯白(DESIGN.md Colors 表有契约) */
   --color-bg-dark: #1a1a1a;
+  --color-border: #e5e5e0;
   --color-accent: #d4a574;       /* 银杏黄:仅装饰,不做正文 */
   --color-link: #1a1a1a;
   --color-status-installed: #5b8c9e;
   --color-status-optional: #c08552;
   --color-status-missing: #9b6b6b;
+
+  /* Font stacks (Spec §3.8,中文优先;global.css @layer base 源头在 Task 10 统一改引用) */
+  --font-serif: 'Source Han Serif SC', 'Songti SC', 'Noto Serif CJK SC', serif;
+  --font-sans: 'PingFang SC', 'Source Han Sans SC', 'Noto Sans CJK SC', 'Microsoft YaHei', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+
+  /* Layout */
+  --container-max: 1280px;  /* 容器宽刻意选 1280;spec 1440 是断点不是容器宽,不冲突 */
 
   /* Type scale - Major Third 1.250 (Spec §3.3) */
   --font-display: 3.815rem;
