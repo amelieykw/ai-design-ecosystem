@@ -5,7 +5,7 @@ description: "Vercel/Linear 设计工程师的动效品味 skill 集,animate/rev
 layer: ②审美
 status: 已装
 purpose: Vercel/Linear 出身设计工程师(Sonner/Vaul 作者)的动效品味 skill 集,与 taste-skill 互补(taste 管整体风格,emil 管动效细节)
-tags: [动效, 审美, 动画, 设计工程师]
+tags: [动效, 审美, 设计工程师]
 install: |
   npx skills@latest add emilkowalski/skills
 docs: https://github.com/emilkowalski/skills

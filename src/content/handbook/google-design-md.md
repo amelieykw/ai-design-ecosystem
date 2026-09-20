@@ -8,7 +8,6 @@ purpose: DESIGN.md 格式官方规范 + CLI(lint 含 WCAG 对比度检查 / diff
 tags: [规范, CLI, WCAG, Tailwind, DTCG]
 docs: https://github.com/google-labs-code/design.md
 repo: https://github.com/google-labs-code/design.md
-stars: 10k+
 featured: false
 addedAt: "2026-09-18"
 ---
