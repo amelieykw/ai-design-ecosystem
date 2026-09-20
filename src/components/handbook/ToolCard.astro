@@ -13,12 +13,14 @@ const statusColor = {
 <a href={`/handbook/${tool.id}/`} class="tool-card">
   <div class="tool-meta">
     <span class="layer-badge">{tool.data.layer}</span>
-    <span class="status-dot" style={`background: ${statusColor}`} title={tool.data.status}></span>
+    <span class="status-dot" style={`background: ${statusColor}`} aria-hidden="true"></span>
+    <span class="sr-only">{tool.data.status}</span>
   </div>
-  <div class="tool-name">{tool.data.title}</div>
+  <h3 class="tool-name">{tool.data.title}</h3>
   <div class="tool-purpose">{tool.data.purpose}</div>
   <div class="tool-tags">
     {tool.data.tags.slice(0, 3).map((t) => <span class="tag">#{t}</span>)}
+    {tool.data.tags.length > 3 && <span class="tag">+{tool.data.tags.length - 3}</span>}
   </div>
 </a>
 
@@ -63,6 +65,10 @@ const statusColor = {
   font-size: var(--font-small);
   color: var(--color-text-secondary);
   margin-bottom: var(--space-3);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 .tool-tags {
   display: flex;
@@ -72,5 +78,16 @@ const statusColor = {
 .tag {
   font-size: var(--font-small);
   color: var(--color-text-secondary);
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 </style>
