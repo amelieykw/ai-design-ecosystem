@@ -4,7 +4,7 @@ title: "awesome-design-md"
 description: "写 DESIGN.md 前最好的对标素材库,73 个真实网站直接抄"
 layer: ④资产
 status: 未装
-purpose: 73 个真实网站的现成 DESIGN.md(Apple/Stripe/Linear/复古系列…),附 preview.html
+purpose: 73 个真实网站的现成 DESIGN.md(Apple/Stripe/Linear/复古系列…),附 preview.html(持续更新,以 README 实时值为准)
 tags: [资产库, DESIGN.md, 参考, 精选]
 docs: https://github.com/VoltAgent/awesome-design-md
 repo: https://github.com/VoltAgent/awesome-design-md

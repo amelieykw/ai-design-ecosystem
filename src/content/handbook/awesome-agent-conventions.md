@@ -4,7 +4,7 @@ title: "awesome-agent-conventions"
 description: "22 个 AI 约定文件的野外图鉴,DESIGN.md 采纳度查这里"
 layer: ④资产
 status: 未装
-purpose: AI agent 约定文件野外指南:22 个约定跨 11 类(AGENTS.md/CLAUDE.md/SKILL.md/DESIGN.md/llms.txt/ai.txt…),每条含文件名、主要读者、spec 来源、成熟度分级与真实仓库实例
+purpose: AI agent 约定文件野外指南:22 个约定跨 11 类(AGENTS.md/CLAUDE.md/SKILL.md/DESIGN.md/llms.txt/ai.txt…),每条含文件名、主要读者、spec 来源、成熟度分级与真实仓库实例(持续增长,以 README 实时值为准)
 tags: [DESIGN.md, 知识库, 规范]
 docs: https://github.com/ItamarZand88/awesome-agent-conventions
 repo: https://github.com/ItamarZand88/awesome-agent-conventions

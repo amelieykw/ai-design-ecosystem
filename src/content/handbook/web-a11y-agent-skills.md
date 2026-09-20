@@ -19,7 +19,7 @@ addedAt: "2026-09-18"
 
 ## 是什么
 
-klovaaxel 维护的框架无关 a11y 技能库(public preview,1.0 前命名与安装流程可能变):10 个便携 skills 覆盖 authoring(写组件)→ review(PR 审查)→ remediation(修缺陷)→ testing(验流程)全环节,外加 forms/navigation/dynamic-ui/css/web-components/debugging 六个专题与 orchestrator 总调度;每种 agent 形态各配 5 个 subagents(Cursor 原生、Claude Code 走 ~/.claude/agents 安装器、Copilot/OpenCode 各有其器)。
+klovaaxel 维护的框架无关 a11y 技能库(public preview,1.0 前命名与安装流程可能变):10 个便携 skills 覆盖 authoring(写组件)→ review(PR 审查)→ testing(验流程)全环节,外加 forms/navigation/dynamic-ui/css/web-components/debugging 六个专题与 orchestrator 总调度;每种 agent 形态各配 5 个 subagents(Cursor 原生、Claude Code 走 ~/.claude/agents 安装器、Copilot/OpenCode 各有其器)。
 全景图将其列为 a11y 按需包的推荐入口(有 WCAG 硬要求再装,日常 impeccable audit 兜底)。与库内分工:spec-a11y 出检测报告,skill-wcag-accessibility 出法条映射,这个管**开发期把 a11y 做对**。
 
 ## 安装
