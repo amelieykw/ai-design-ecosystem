@@ -10,13 +10,14 @@ colors:
   status-optional: "#c08552"
   status-missing: "#9b6b6b"
 typography:
-  display: { fontFamily: "Source Han Serif SC", fontSize: "3.815rem", fontWeight: 700 }
-  h1: { fontFamily: "Source Han Serif SC", fontSize: "3.052rem", fontWeight: 700 }
-  h2: { fontFamily: "Source Han Serif SC", fontSize: "2.441rem", fontWeight: 700 }
-  h3: { fontFamily: "Source Han Serif SC", fontSize: "1.953rem", fontWeight: 700 }
-  h4: { fontFamily: "Source Han Serif SC", fontSize: "1.563rem", fontWeight: 700 }
-  body: { fontFamily: "PingFang SC", fontSize: "1rem" }
-  code: { fontFamily: "JetBrains Mono", fontSize: "0.9em" }
+  display: { fontFamily: "'Source Han Serif SC', 'Songti SC', 'Noto Serif CJK SC', serif", fontSize: "3.815rem", fontWeight: 700 }
+  h1: { fontFamily: "'Source Han Serif SC', 'Songti SC', 'Noto Serif CJK SC', serif", fontSize: "3.052rem", fontWeight: 700 }
+  h2: { fontFamily: "'Source Han Serif SC', 'Songti SC', 'Noto Serif CJK SC', serif", fontSize: "2.441rem", fontWeight: 700 }
+  h3: { fontFamily: "'Source Han Serif SC', 'Songti SC', 'Noto Serif CJK SC', serif", fontSize: "1.953rem", fontWeight: 700 }
+  h4: { fontFamily: "'Source Han Serif SC', 'Songti SC', 'Noto Serif CJK SC', serif", fontSize: "1.563rem", fontWeight: 700 }
+  body: { fontFamily: "'PingFang SC', 'Source Han Sans SC', 'Noto Sans CJK SC', 'Microsoft YaHei', system-ui, -apple-system, sans-serif", fontSize: "1rem" }
+  small: { fontFamily: "'PingFang SC', 'Source Han Sans SC', 'Noto Sans CJK SC', 'Microsoft YaHei', system-ui, -apple-system, sans-serif", fontSize: "0.8rem" }
+  code: { fontFamily: "'JetBrains Mono', 'SF Mono', monospace", fontSize: "0.9em" }
 rounded: { sm: "4px", md: "8px", lg: "16px" }
 spacing: { 1: "4px", 2: "8px", 3: "12px", 4: "16px", 6: "24px", 8: "32px", 12: "48px", 16: "64px", 24: "96px" }
 shadow: { sm: "0 1px 3px rgba(0,0,0,0.04)", md: "0 4px 12px rgba(0,0,0,0.08)" }
