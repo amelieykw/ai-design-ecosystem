@@ -5,7 +5,7 @@ description: "Figma/网页同图语义设计图,verify+fit 闭环代码自愈"
 layer: ⑥底座
 status: 未装
 purpose: AI 原生设计工程平台(单 MCP):Figma 或任意 URL 归一化为同一语义设计图(token 去重/flexbox 已解/角色标注),plumb_verify/plumb_fit 让生成代码对照源自愈到像素级,plumb_studio 反向从一句 brief 生成带自评循环的 Figma 文件
-tags: [MCP, Figma, 设计稿, 审查]
+tags: [MCP, Figma, 设计稿, audit]
 install: |
   npm install -g plumb-mcp && plumb-mcp init
 docs: https://github.com/tathagat22/plumb-mcp

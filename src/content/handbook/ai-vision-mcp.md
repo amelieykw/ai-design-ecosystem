@@ -5,7 +5,7 @@ description: "Gemini 视觉 MCP,audit_design 出 WCAG 对比度与设计合规�
 layer: ⑥底座
 status: 未装
 purpose: Gemini/Vertex AI 视觉分析 MCP:audit_design 工具做像素级设计合规审计(主色提取、视觉复杂度、WCAG 对比度 AA/AAA 校验、Gemini AI 批注修复建议),palette/components 工具提取 token 与组件目录
-tags: [MCP, a11y, 审查]
+tags: [MCP, a11y, audit]
 install: |
   claude mcp add ai-vision-mcp -e IMAGE_PROVIDER=google -e VIDEO_PROVIDER=google -e GEMINI_API_KEY=<TOKEN> -- npx ai-vision-mcp
 docs: https://github.com/tan-yong-sheng/ai-vision-mcp
@@ -19,7 +19,7 @@ addedAt: "2026-09-18"
 
 ## 是什么
 
-tan-yong-sheng 维护的通用视觉分析 MCP(Gemini API 与 Vertex AI 双 provider,共 30+ 分析工具),与设计相关的核心是 audit_design:对设计图/截图做像素分析(W3C 相对亮度公式算 WCAG 对比度、AA/AAA 校验、色彩/复杂度/亮度问题检测)再叠加 Gemini 视觉批注产出修复建议;palette 提取设计 token、components 盘点 UI 组件与设计系统成熟度。
+tan-yong-sheng 维护的通用视觉分析 MCP(Gemini API 与 Vertex AI 双 provider),提供 4 个主分析工具(analyze_image 图像分析 / compare_images 图像对比 / detect_objects_in_image 目标检测 / audit_design 设计审计)+ analyze_video 视频分析,与设计相关的核心是 audit_design:对设计图/截图做像素分析(W3C 相对亮度公式算 WCAG 对比度、AA/AAA 校验、色彩/复杂度/亮度问题检测)再叠加 Gemini 视觉批注产出修复建议;另可通过 prompt 提取设计 token 与组件成熟度盘点。
 与库内分工:spec-a11y 用真实浏览器跑规则、证据硬但只测成品页;ai-vision-mcp 吃**任意截图/设计稿**(不需要可访问的 URL),适合设计评审期提前发现对比度问题,但 AI 批注属启发式、结论需复核。全景图将其归入 design-eval 场景(多维度 UI 评估:启发式/WCAG/token 一致性)。
 
 ## 安装

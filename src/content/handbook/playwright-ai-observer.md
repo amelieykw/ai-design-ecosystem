@@ -5,9 +5,9 @@ description: "GPT-4V 看截图找 UI 缺陷,不需要 baseline 首跑即报"
 layer: ⑥底座
 status: 未装
 purpose: Playwright 插件:测试中自动截图交 GPT-4V 语义分析,免 baseline 发现重叠元素/布局破裂/文本截断/低对比度/空状态/卡加载六类缺陷,报告含修复建议
-tags: [Playwright, audit, 检测]
+tags: [Playwright, audit]
 install: |
-  npm install playwright-ai-observer
+  npm install github:dstekanov/playwright-ai-observer  # npm 包尚未发布,v0.1.0 源码安装
 docs: https://github.com/dstekanov/playwright-ai-observer
 repo: https://github.com/dstekanov/playwright-ai-observer
 stars: <100
