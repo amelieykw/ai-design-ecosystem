@@ -1,0 +1,47 @@
+:root {
+  /* Colors (Spec §3.2) */
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #6b6b6b;
+  --color-bg-primary: #faf9f6;
+  --color-bg-dark: #1a1a1a;
+  --color-accent: #d4a574;       /* 银杏黄:仅装饰,不做正文 */
+  --color-link: #1a1a1a;
+  --color-status-installed: #5b8c9e;
+  --color-status-optional: #c08552;
+  --color-status-missing: #9b6b6b;
+
+  /* Type scale - Major Third 1.250 (Spec §3.3) */
+  --font-display: 3.815rem;
+  --font-h1: 3.052rem;
+  --font-h2: 2.441rem;
+  --font-h3: 1.953rem;
+  --font-h4: 1.563rem;
+  --font-body: 1rem;
+  --font-small: 0.8rem;
+
+  /* Spacing - 8pt grid (Spec §3.5) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+
+  /* Shadow */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+
+  /* Motion (Spec §3.7) */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 160ms;
+  --duration-base: 240ms;
+  --duration-stagger: 40ms;
+}
