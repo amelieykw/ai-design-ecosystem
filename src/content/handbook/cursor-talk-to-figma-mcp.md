@@ -5,7 +5,7 @@ description: "Grab 开源 Cursor↔Figma 双向 MCP,WebSocket 实时读写画布
 layer: ⑥底座
 status: 未装
 purpose: Grab 开源的 AI↔Figma 双向 MCP(WebSocket 中继,默认 3055 端口):agent 经 join_channel 连上 Figma 插件后,可直接读设计并编程化改画布;社区 6.9k+ 安装
-tags: [MCP, 设计稿, Figma, 双向同步]
+tags: [MCP, 设计稿, Figma]
 install: |
   claude mcp add TalkToFigma -- bunx cursor-talk-to-figma-mcp@latest
 docs: https://github.com/grab/cursor-talk-to-figma-mcp

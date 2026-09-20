@@ -5,7 +5,7 @@ description: "Design Engineer 单点深课库,npx 或 MCP 按需取用零负担"
 layer: ③知识
 status: 未装
 purpose: Design Engineer 单点深课库(motion、baseline-ui、create-design-md 等),CLI `npx ui-skills get <slug>` 或 MCP(list_skills/get_skill)按需取用,无需常驻安装
-tags: [知识库, Design Engineer, CLI, MCP]
+tags: [知识库, 设计工程师, CLI, MCP]
 docs: https://github.com/ibelick/ui-skills
 repo: https://github.com/ibelick/ui-skills
 featured: false

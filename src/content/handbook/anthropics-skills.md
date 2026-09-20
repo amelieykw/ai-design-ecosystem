@@ -5,12 +5,12 @@ description: "Agent Skills 官方源头与格式规范,官方设计插件集散�
 layer: ①规范
 status: 已装
 purpose: Agent Skills 格式与规范的源头(agentskills.io 开放标准出处);维护 frontend-design、canvas-design、brand-guidelines、document-skills 等官方设计插件;以 plugin marketplace 分发,装一次全局生效
-tags: [规范, SKILL, 插件市场, frontend-design]
+tags: [规范, 插件市场]
 install: |
   claude plugin marketplace add anthropics/skills
 docs: https://github.com/anthropics/skills
 repo: https://github.com/anthropics/skills
-stars: 1k-10k
+stars: "10k+"
 featured: false
 addedAt: "2026-09-18"
 ---

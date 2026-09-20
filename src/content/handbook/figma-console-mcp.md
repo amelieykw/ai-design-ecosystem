@@ -20,7 +20,7 @@ addedAt: "2026-09-18"
 ## 是什么
 
 southleft 维护的 Figma MCP,口号"把设计系统变成 API":Local 模式全量 121 工具(Cloud 101 / Remote 只读 9)。
-看家能力:figma_export_tokens/figma_import_tokens 双向 token 同步(DTCG 2025.10 方言 + 9 种格式,import 有完整 apply 阶段:建集合/写别名/重命名,官方称替代 Style Dictionary 与 Tokens Studio 的导出管线);figma_ds_* 七件套从生产代码库反推设计系统并 scaffold Storybook;另有截图校验、控制台日志流。与 cursor-talk-to-figma-mcp 的分工见该词条。
+看家能力:figma_export_tokens/figma_import_tokens 双向 token 同步(导出共 10 种格式:DTCG 2025.10 方言 + 9 种其他,import 有完整 apply 阶段:建集合/写别名/重命名,官方称替代 Style Dictionary 与 Tokens Studio 的导出管线);figma_ds_* 七件套从生产代码库反推设计系统并 scaffold Storybook;另有截图校验、控制台日志流。与 cursor-talk-to-figma-mcp 的分工见该词条。
 
 ## 安装
 

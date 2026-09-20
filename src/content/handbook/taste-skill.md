@@ -5,12 +5,12 @@ description: "反 AI 模板味风格变体集,三旋钮调出非默认审美"
 layer: ②审美
 status: 已装
 purpose: 10+ 独立风格变体按需单装(soft/minimalist/brutalist/stitch…);VARIANCE/MOTION/DENSITY 三旋钮控制变化度、动效量、信息密度;stitch 变体原生支持 DESIGN.md 导出
-tags: [审美, 风格, 反模板味]
+tags: [审美, 反模板味]
 install: |
   npx skills add https://github.com/Leonxlnx/taste-skill --skill "high-end-visual-design"
 docs: https://github.com/Leonxlnx/taste-skill
 repo: https://github.com/Leonxlnx/taste-skill
-stars: 10k级
+stars: "10k+"
 featured: false
 addedAt: "2026-09-18"
 ---

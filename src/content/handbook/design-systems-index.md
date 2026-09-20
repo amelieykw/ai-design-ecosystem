@@ -5,7 +5,7 @@ description: "Material/Fluent/Carbon/Polaris 主流设计系统导航索引 skil
 layer: ③知识
 status: 未装
 purpose: 主流设计系统的 dispatch index skill:SKILL.md 每类内联 2-3 个首选,全量列表按需加载于 5 个 reference 文件(大厂 DS/token 资源/pattern library/React DS/RN DS)
-tags: [知识库, 设计系统, 索引]
+tags: [知识库, 设计系统]
 install: |
   npx skills add https://github.com/Ezra-Y/design-systems-index --skill design-systems-index
 docs: https://github.com/Ezra-Y/design-systems-index
