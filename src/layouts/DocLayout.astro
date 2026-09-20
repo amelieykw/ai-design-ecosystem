@@ -53,9 +53,9 @@ import BaseLayout from './BaseLayout.astro'
 	margin: 0 auto;
 	padding: var(--space-8);
 }
-/* md 渲染的正文样式需要 :global(scoped 选择器够不到 slot 里渲染的 DOM)
-   页面 h1 唯一化:页面侧 .doc-header h1 提供主标题;DocLayout 兜底把 md 里的 h1
-   视觉降级为 h2(防止未来样本忘记从 ## 起步,被 global @layer base 放大) */
+/* ⚠️ 不推荐样本作者用 <h1>:页面侧 .doc-header h1 已提供主标题;md 内容应从 <h2> 起步
+   此规则仅做防御:若作者误写 <h1>,视觉降级到 h2 字号,避免双重放大。
+   DOM 仍是 h1,SR 仍按 h1 播报;但视觉权重不致过大。 */
 .doc :global(h1) {
 	font-size: var(--font-h2);
 }

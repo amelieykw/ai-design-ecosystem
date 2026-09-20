@@ -1,29 +1,27 @@
 ---
 import { getCollection, render } from 'astro:content'
 import DocLayout from '@/layouts/DocLayout.astro'
-import { STATUS_COLORS } from '@/lib/status'
+import { TOOL_STATUS_COLORS, type ToolStatus } from '@/lib/status'
 
 export async function getStaticPaths() {
 	const tools = await getCollection('handbook')
-	// slug 双保险:只放行 kebab-case 英文数字 id(Task 9 数据防线)
+	// schema 已是 z.string() 受控,regex 是冗余防御;触发即数据 bug,直接抛错阻断 build
+	// (异常前缀 [handbook] 便于排查;后续 assets-* 详情页套同一模式时改成 [<collection>])
 	const SLUG_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/
-	return tools
-		.filter((tool) => {
-			if (!SLUG_RE.test(tool.id)) {
-				console.warn(`[handbook] 跳过不合规 id: ${tool.id}(需 kebab-case)`)
-				return false
-			}
-			return true
-		})
-		.map((tool) => ({
+	return tools.map((tool) => {
+		if (!SLUG_RE.test(tool.id)) {
+			throw new Error(`[handbook] 不合规 id 阻断 build: ${tool.id}(需 kebab-case)`)
+		}
+		return {
 			params: { id: tool.id },
 			props: { tool },
-		}))
+		}
+	})
 }
 
 const { tool } = Astro.props
 const { Content } = await render(tool)
-const statusColor = STATUS_COLORS[tool.data.status]
+const statusColor = TOOL_STATUS_COLORS[tool.data.status as ToolStatus]
 ---
 
 <DocLayout

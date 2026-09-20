@@ -1,6 +1,7 @@
 import { defineCollection, z } from 'astro:content'
 import { glob } from 'astro/loaders'
 import { LAYERS } from '@/lib/layers'
+import { TOOL_STATUSES } from '@/lib/status'
 
 /**
  * 约定:assets-* 系列的结构化字段(palette/pairing/typeScale 等)为 optional,
@@ -24,7 +25,7 @@ const handbook = defineCollection({
     ...baseFields,
     // 枚举从 LAYERS 单一事实源运行时生成(与 UI 组件共用)
     layer: z.enum(LAYERS.map((l) => l.id) as [string, ...string[]]),
-    status: z.enum(['已装', '未装', '按需']),
+    status: z.enum(TOOL_STATUSES),
     version: z.string().optional(),
     purpose: z.string(),
     install: z.string().optional(),

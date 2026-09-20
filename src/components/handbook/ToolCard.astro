@@ -1,10 +1,10 @@
 ---
 // 工具卡片:handbook 列表的数据驱动卡片
 // 状态圆点颜色由 status 映射到 token(单一事实源在 src/lib/status)
-import { STATUS_COLORS } from '@/lib/status'
+import { TOOL_STATUS_COLORS, type ToolStatus } from '@/lib/status'
 const { tool } = Astro.props
 
-const statusColor = STATUS_COLORS[tool.data.status]
+const statusColor = TOOL_STATUS_COLORS[tool.data.status as ToolStatus]
 ---
 
 <a href={`/handbook/${tool.id}/`} class="tool-card">
