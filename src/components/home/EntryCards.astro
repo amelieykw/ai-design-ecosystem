@@ -1,0 +1,67 @@
+---
+// 首页 4 入口大卡:主卡 2x + 副卡 1x × 3(违反三卡片等宽禁令的反例)
+// 数据静态;数量徽章后续接 collection 后再接真实数字
+const entries = [
+  { title: '①目录手册', desc: '30+ 工具', href: '/handbook/', primary: true },
+  { title: '②工作流', desc: '四步法', href: '/workflow/' },
+  { title: '③速查', desc: '命令速查', href: '/cheatsheet/' },
+  { title: '④灵感库', desc: '8 类素材', href: '/assets/' },
+]
+---
+
+<section class="entries" aria-label="站级四大模块入口">
+  {entries.map((entry) => (
+    <a href={entry.href} class={`entry-card ${entry.primary ? 'primary' : ''}`}>
+      <div class="entry-title">{entry.title}</div>
+      <div class="entry-desc">{entry.desc}</div>
+    </a>
+  ))}
+</section>
+
+<style>
+.entries {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: var(--space-4);
+  margin-top: var(--space-12);
+}
+.entry-card {
+  padding: var(--space-6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  text-decoration: none;
+  color: var(--color-text-primary);
+  display: block;
+  min-height: 140px;
+  transition: transform var(--duration-base) var(--ease-out),
+              box-shadow var(--duration-base) var(--ease-out);
+}
+.entry-card:hover,
+.entry-card:focus-visible {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+.entry-card.primary {
+  background: var(--color-bg-dark);
+  color: var(--color-bg-primary);
+  border-color: var(--color-bg-dark);
+}
+.entry-title {
+  font-family: var(--font-serif);
+  font-size: var(--font-h3);
+  margin-bottom: var(--space-2);
+}
+.entry-desc {
+  font-size: var(--font-body);
+  opacity: 0.7;
+}
+@media (max-width: 1024px) {
+  .entries { grid-template-columns: 1fr 1fr; }
+  .entry-card.primary { grid-column: span 2; }
+}
+@media (max-width: 640px) {
+  .entries { grid-template-columns: 1fr; }
+  .entry-card.primary { grid-column: span 1; }
+}
+</style>
