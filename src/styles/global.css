@@ -4,7 +4,8 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 html {
-  font-family: 'Inter', system-ui, -apple-system, 'PingFang SC', 'Source Han Sans SC', sans-serif;
+  /* 中文优先,Inter 已移除(spec §3.8:Inter 不作主字体;西文字形由系统中文字体兜底) */
+  font-family: 'PingFang SC', 'Source Han Sans SC', system-ui, -apple-system, sans-serif;
   font-size: 16px;
   color: var(--color-text-primary);
   background: var(--color-bg-primary);
