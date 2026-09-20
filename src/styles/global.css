@@ -5,35 +5,39 @@
 
 html {
   /* 中文优先,Inter 已移除(spec §3.8:Inter 不作主字体;西文字形由系统中文字体兜底) */
-  font-family: 'PingFang SC', 'Source Han Sans SC', system-ui, -apple-system, sans-serif;
+  font-family: 'PingFang SC', 'Source Han Sans SC', 'Noto Sans CJK SC', 'Microsoft YaHei', system-ui, -apple-system, sans-serif;
   font-size: 16px;
   color: var(--color-text-primary);
   background: var(--color-bg-primary);
   -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3, .display {
-  font-family: 'Source Han Serif SC', 'Songti SC', serif;
-  font-weight: 700;
-  line-height: 1.1;
-}
+/* 以下规则包进 @layer base:Tailwind 已声明 base 在 utilities 之前,
+   包层后 utilities 可正常覆盖;若留 unlayered 会静默压死 utilities 层 */
+@layer base {
+  h1, h2, h3, .display {
+    font-family: 'Source Han Serif SC', 'Songti SC', 'Noto Serif CJK SC', serif;
+    font-weight: 700;
+    line-height: 1.1;
+  }
 
-h1 { font-size: var(--font-h1); }
-h2 { font-size: var(--font-h2); }
-h3 { font-size: var(--font-h3); }
-.display { font-size: var(--font-display); }
+  h1 { font-size: var(--font-h1); }
+  h2 { font-size: var(--font-h2); }
+  h3 { font-size: var(--font-h3); }
+  .display { font-size: var(--font-display); }
 
-code, pre {
-  font-family: 'JetBrains Mono', 'SF Mono', monospace;
-  font-size: 0.9em;
-}
+  code, pre {
+    font-family: 'JetBrains Mono', 'SF Mono', monospace;
+    font-size: 0.9em;
+  }
 
-/* 反模式禁令(SPEC §3.8) */
-.no-bounce * { transition-timing-function: var(--ease-out) !important; }
-a { color: var(--color-link); text-underline-offset: 3px; }
+  /* 反模式禁令(SPEC §3.8) */
+  .no-bounce * { transition-timing-function: var(--ease-out) !important; }
+  a { color: var(--color-link); text-underline-offset: 3px; }
 
-/* 聚焦可达性(验收项 B) */
-:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 3px;
+  /* 聚焦可达性(验收项 B) */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
 }
