@@ -37,3 +37,4 @@ Figma 侧从社区页装插件(或本地导入 `src/cursor_mcp_plugin/manifest.j
 
 要 AI 在 Figma 里真正动手(改图层/排版/建 frame)而不只是读稿时;
 与 Figma 官方 MCP 的取舍:只读分析用官方插件,写画布才需要它——用前记得开中继,三进程(MCP/中继/插件)缺一不可。
+什么时候不用:只做只读设计稿分析时,用 Figma 官方 MCP 即可——不要为它开中继、装插件、跑 WebSocket,维护成本远高于收益。

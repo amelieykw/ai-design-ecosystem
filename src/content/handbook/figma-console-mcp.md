@@ -1,7 +1,7 @@
 ---
 name: figma-console-mcp
 title: "Figma Console MCP"
-description: "121 工具把设计系统变成 API,token 双向同步直推 Figma"
+description: "把设计系统变成 API 的 Figma MCP,token 双向同步直推 Figma"
 layer: ⑥底座
 status: 未装
 purpose: '把设计系统变成 API 的 Figma MCP——Local 模式 121 工具(Cloud 101/Remote 只读 9),DTCG token 双向同步(export 10 格式/import 全量 apply)、figma_ds_* 设计系统提取(代码→token→Storybook)、截图调试'
