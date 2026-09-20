@@ -13,7 +13,7 @@ const statusColor = getToolStatusColor(tool.data.status)
     <span class="status-dot" style={`background: ${statusColor}`} aria-hidden="true"></span>
     <span class="sr-only">{tool.data.status}</span>
   </div>
-  <h3 class="tool-name">{tool.data.title}</h3>
+  <h2 class="tool-name">{tool.data.title}</h2>
   <div class="tool-purpose">{tool.data.purpose}</div>
   <div class="tool-tags">
     {tool.data.tags.slice(0, 3).map((t: string) => <span class="tag">#{t}</span>)}
@@ -43,6 +43,7 @@ const statusColor = getToolStatusColor(tool.data.status)
 }
 .tool-name {
   font-family: var(--font-serif);
+  /* 卡名原为 h3 字号;改 h2 语义(修复 skipped-heading)后显式锁定字号,视觉不变 */
   font-size: var(--font-h4);
   margin-bottom: var(--space-2);
 }

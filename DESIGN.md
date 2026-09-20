@@ -6,9 +6,9 @@ colors:
   bg-primary: "#faf9f6"
   bg-dark: "#1a1a1a"
   accent: "#d4a574"
-  status-installed: "#5b8c9e"
-  status-optional: "#c08552"
-  status-missing: "#9b6b6b"
+  status-installed: "#457080"
+  status-optional: "#8f6030"
+  status-missing: "#845454"
 typography:
   display: { fontFamily: "'Source Han Serif SC', 'Songti SC', 'Noto Serif CJK SC', serif", fontSize: "3.815rem", fontWeight: 700 }
   h1: { fontFamily: "'Source Han Serif SC', 'Songti SC', 'Noto Serif CJK SC', serif", fontSize: "3.052rem", fontWeight: 700 }
@@ -47,9 +47,9 @@ motion: { ease-out: "cubic-bezier(0.16, 1, 0.3, 1)", duration-fast: "160ms", dur
 | 卡片纸白 | `#fffdf8` | 卡片/浮层背景 | 与米白底形成微差,替代纯白 |
 | 背景深 | `#1a1a1a` | 详情页 hero 段,20% 页面 | |
 | 强调 | `#d4a574` | 银杏黄,**仅装饰** | ⚠️ 不做正文与链接 |
-| 已装/成功 | `#5b8c9e` | 状态徽章 | 淡青 |
-| 按需/警示 | `#c08552` | 状态徽章 | 琥珀 |
-| 未装/危险 | `#9b6b6b` | 状态徽章 | 暗红 |
+| 已装/成功 | `#457080` | 状态徽章 | 青灰(V1.0 验收加深,配米白文字 5.14:1 ≥ AA) |
+| 按需/警示 | `#8f6030` | 状态徽章 | 琥珀(V1.0 验收加深,5.14:1 ≥ AA) |
+| 未装/危险 | `#845454` | 状态徽章 | 暗红(V1.0 验收加深,5.91:1 ≥ AA) |
 
 **为什么银杏黄不做正文与链接**:对比度仅 2.4:1,不达 WCAG AA(4.5:1)。
 只在装饰/图标/hover 反馈用,文字色用近黑 `#1a1a1a`。

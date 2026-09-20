@@ -9,9 +9,11 @@
   --color-border: #e5e5e0;
   --color-accent: #d4a574;       /* 银杏黄:仅装饰,不做正文 */
   --color-link: #1a1a1a;
-  --color-status-installed: #5b8c9e;
-  --color-status-optional: #c08552;
-  --color-status-missing: #9b6b6b;
+  /* 状态色经 V1.0 验收加深(原锚点 #5b8c9e/#c08552/#9b6b6b 配米白文字仅 3.5/3.0/4.2:1,
+     不达 WCAG AA 4.5:1);spec §3.2 允许微调,色相/语义不变,现在为 5.14/5.14/5.91:1 */
+  --color-status-installed: #457080;
+  --color-status-optional: #8f6030;
+  --color-status-missing: #845454;
 
   /* Font stacks (Spec §3.8,中文优先;global.css @layer base 源头在 Task 10 统一改引用) */
   --font-serif: 'Source Han Serif SC', 'Songti SC', 'Noto Serif CJK SC', serif;
