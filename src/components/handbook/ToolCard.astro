@@ -16,7 +16,7 @@ const statusColor = getToolStatusColor(tool.data.status)
   <h3 class="tool-name">{tool.data.title}</h3>
   <div class="tool-purpose">{tool.data.purpose}</div>
   <div class="tool-tags">
-    {tool.data.tags.slice(0, 3).map((t) => <span class="tag">#{t}</span>)}
+    {tool.data.tags.slice(0, 3).map((t: string) => <span class="tag">#{t}</span>)}
     {tool.data.tags.length > 3 && <span class="tag">+{tool.data.tags.length - 3}</span>}
   </div>
 </a>
