@@ -1,0 +1,56 @@
+---
+// 六层全景图:内容源文档 §一 的架构分层,静态数据(层数 ≠ 工具条目数)
+const layers = [
+  { id: '①规范', desc: '定标准和格式' },
+  { id: '②审美', desc: '管怎么想、什么好看' },
+  { id: '③知识', desc: '管具体用什么' },
+  { id: '④资产', desc: '管长什么样的成品契约' },
+  { id: '⑤流程', desc: '管按什么步骤做完整项目' },
+  { id: '⑥底座', desc: '承载一切的工程底座' },
+]
+---
+
+<section class="layers" aria-label="AI 设计生态六层架构">
+  {layers.map((layer) => (
+    <a href={`/handbook/?layer=${encodeURIComponent(layer.id)}`} class="layer-card">
+      <div class="layer-id">{layer.id}</div>
+      <div class="layer-desc">{layer.desc}</div>
+    </a>
+  ))}
+</section>
+
+<style>
+.layers {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--space-3);
+}
+.layer-card {
+  padding: var(--space-4);
+  border: 1px solid #e5e5e0;
+  border-radius: var(--radius-md);
+  background: white;
+  text-decoration: none;
+  color: var(--color-text-primary);
+  transition: transform var(--duration-base) var(--ease-out), box-shadow var(--duration-base) var(--ease-out);
+}
+.layer-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+.layer-id {
+  font-family: 'Source Han Serif SC', 'Songti SC', 'Noto Serif CJK SC', serif;
+  font-size: var(--font-h3);
+  margin-bottom: var(--space-2);
+}
+.layer-desc {
+  font-size: var(--font-small);
+  color: var(--color-text-secondary);
+}
+@media (max-width: 1024px) {
+  .layers { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 640px) {
+  .layers { grid-template-columns: 1fr; }
+}
+</style>
