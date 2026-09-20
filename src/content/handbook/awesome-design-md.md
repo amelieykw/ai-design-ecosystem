@@ -1,7 +1,7 @@
 ---
 name: awesome-design-md
 title: "awesome-design-md"
-description: "73 个真实网站的现成 DESIGN.md 参考库,附 preview 预览"
+description: "写 DESIGN.md 前最好的对标素材库,73 个真实网站直接抄"
 layer: ④资产
 status: 未装
 purpose: 73 个真实网站的现成 DESIGN.md(Apple/Stripe/Linear/复古系列…),附 preview.html

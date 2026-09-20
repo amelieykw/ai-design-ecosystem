@@ -5,7 +5,7 @@ description: "DESIGN.md 格式官方规范,lint/diff/export CLI 免安装即用"
 layer: ①规范
 status: 未装
 purpose: DESIGN.md 格式官方规范 + CLI(lint 含 WCAG 对比度检查 / diff / export 到 Tailwind/DTCG)
-tags: [规范, CLI, WCAG, Tailwind, DTCG]
+tags: [规范, CLI, WCAG, Tailwind, DTCG, DESIGN.md]
 docs: https://github.com/google-labs-code/design.md
 repo: https://github.com/google-labs-code/design.md
 featured: false
@@ -21,7 +21,12 @@ Google 实验室出的 DESIGN.md 格式官方规范 + 命令行工具。
 
 ## 安装
 
-见 frontmatter `docs` 链接,无需 npm 安装。
+无需安装,直接用 npx:
+
+```bash
+npx @google/design.md lint DESIGN.md
+npx @google/design.md export DESIGN.md --format tailwind
+```
 
 ## 什么时候用
 
