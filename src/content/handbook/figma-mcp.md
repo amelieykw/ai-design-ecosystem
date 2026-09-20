@@ -4,7 +4,7 @@ title: "Figma 官方 MCP"
 description: "Figma 官方维护的 MCP,设计稿只读访问的首选通道"
 layer: ⑥底座
 status: 已装
-version: "plugin 2.1.7"
+version: "2.1.7"
 purpose: Figma 官方维护的 MCP server,把设计稿上下文直接接入 AI 工作流:读设计信息、提取 token、审计图层结构;本机定位为只读基线,所有"看 Figma"场景首选
 tags: [MCP, Figma, 设计稿]
 docs: https://github.com/figma/mcp-server-guide
@@ -19,7 +19,7 @@ addedAt: "2026-09-18"
 ## 是什么
 
 Figma 官方维护的 MCP server(官方口径:把 Figma 设计上下文直接带进 AI 工作流),远程端点 `https://mcp.figma.com/mcp`,浏览器 OAuth 授权即用。
-本机以官方 plugin 形式安装(2.1.7,随 claude-plugins-official 集合分发,另随附 figma-use / figma-implement-design 等 7 个官方工作流 skill)。定位:全 handbook 的只读基线——看设计稿、批量提取 token、对照代码实现,都先走它;cursor-talk-to-figma-mcp / figma-console-mcp / plumb / html-to-mastergo-mcp 四个条目均以它为参照系。官方 guide 仓库 star 当日实测 2005(GitHub API)。
+本机以官方 plugin 形式安装(2.1.7,随 claude-plugins-official 集合分发,另随附 figma-use / figma-implement-design 等 7 个官方工作流 skill)。定位:全 handbook 的只读基线——看设计稿、批量提取 token、对照代码实现,都先走它;cursor-talk-to-figma-mcp / figma-console-mcp / plumb 三个条目均以它为参照系。官方 guide 仓库 star 当日实测 2005(GitHub API)。
 
 ## 安装
 
