@@ -11,7 +11,7 @@ const entries = [
 
 <section class="entries" aria-label="站级四大模块入口">
   {entries.map((entry) => (
-    <a href={entry.href} class={`entry-card ${entry.primary ? 'primary' : ''}`}>
+    <a href={entry.href} class={`entry-card card-link ${entry.primary ? 'primary' : ''}`}>
       <div class="entry-title">{entry.title}</div>
       <div class="entry-desc">{entry.desc}</div>
     </a>
@@ -19,6 +19,7 @@ const entries = [
 </section>
 
 <style>
+/* 卡片基础(border/surface/hover+focus/transition)来自 global.css 的 .card-link,此处只留特有样式 */
 .entries {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr;
@@ -27,20 +28,7 @@ const entries = [
 }
 .entry-card {
   padding: var(--space-6);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
-  text-decoration: none;
-  color: var(--color-text-primary);
-  display: block;
   min-height: 140px;
-  transition: transform var(--duration-base) var(--ease-out),
-              box-shadow var(--duration-base) var(--ease-out);
-}
-.entry-card:hover,
-.entry-card:focus-visible {
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
 }
 .entry-card.primary {
   background: var(--color-bg-dark);

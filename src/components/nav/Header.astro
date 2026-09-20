@@ -1,0 +1,94 @@
+---
+// 站级统一 Header:logo + 主导航,全站共用
+// (收口原首页 site-header 与 handbook 列表页 page-header 两套重复实现)
+// logoHeading:首页传 true——logo 即页面 h1(保持原首页语义);其余页面用 <p>,各页自带 h1
+interface Props {
+  logoHeading?: boolean
+}
+const { logoHeading = false } = Astro.props
+
+const navItems = [
+  { label: '目录手册', href: '/handbook/' },
+  { label: '工作流', href: '/workflow/' },
+  { label: '速查', href: '/cheatsheet/' },
+  { label: '灵感库', href: '/assets/' },
+]
+const isActive = (href: string) => Astro.url.pathname.startsWith(href)
+---
+
+<header class="site-header">
+  <div class="header-inner">
+    {logoHeading ? (
+      <h1 class="logo">
+        <a href="/"><span class="mark" aria-hidden="true">◆</span>AI 设计生态仓库</a>
+      </h1>
+    ) : (
+      <p class="logo">
+        <a href="/"><span class="mark" aria-hidden="true">◆</span>AI 设计生态仓库</a>
+      </p>
+    )}
+    <nav aria-label="主导航">
+      {navItems.map((item) => (
+        <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+          {item.label}
+        </a>
+      ))}
+    </nav>
+  </div>
+</header>
+
+<style>
+.site-header {
+  border-bottom: 1px solid var(--color-border);
+}
+/* 批 1 M-4:内容与 --container-max 对齐,不再贴屏幕最左 */
+.header-inner {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-8);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-6);
+}
+.logo {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: var(--font-h4);
+  margin: 0;
+}
+.logo a {
+  color: var(--color-text-primary);
+  text-decoration: none;
+}
+.mark {
+  color: var(--color-accent); /* ◆ 为纯装饰符号,银杏黄仅装饰用途 */
+  margin-right: var(--space-2);
+}
+nav {
+  display: flex;
+  gap: var(--space-6);
+}
+nav a {
+  text-decoration: none;
+  color: var(--color-text-primary);
+  font-size: var(--font-body);
+}
+nav a:hover,
+nav a[aria-current='page'] {
+  text-decoration: underline;
+  text-decoration-color: var(--color-accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+}
+nav a[aria-current='page'] {
+  font-weight: 600;
+}
+@media (max-width: 640px) {
+  .header-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+}
+</style>

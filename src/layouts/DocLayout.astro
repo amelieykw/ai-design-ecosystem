@@ -1,14 +1,17 @@
 ---
-// 详情页布局:面包屑 + 正文容器(md 渲染)
+// 详情页布局:站级 Header + 面包屑 + 正文容器(md 渲染)+ 站级 Footer
 interface Props {
 	title: string
 	breadcrumb: { label: string; href: string }[]
 }
 const { title, breadcrumb } = Astro.props
 import BaseLayout from './BaseLayout.astro'
+import Header from '@/components/nav/Header.astro'
+import Footer from '@/components/nav/Footer.astro'
 ---
 
 <BaseLayout title={`${title} · AI 设计生态仓库`}>
+	<Header />
 	<nav class="breadcrumb" aria-label="面包屑">
 		{breadcrumb.map((item, i) => (
 			<>
@@ -24,6 +27,7 @@ import BaseLayout from './BaseLayout.astro'
 	<article class="doc">
 		<slot />
 	</article>
+	<Footer />
 </BaseLayout>
 
 <style>

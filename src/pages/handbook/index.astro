@@ -1,6 +1,8 @@
 ---
 import { getCollection } from 'astro:content'
 import ToolCard from '@/components/handbook/ToolCard.astro'
+import Header from '@/components/nav/Header.astro'
+import Footer from '@/components/nav/Footer.astro'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 
 const tools = await getCollection('handbook')
@@ -8,34 +10,31 @@ const sorted = tools.sort((a, b) => a.data.title.localeCompare(b.data.title))
 ---
 
 <BaseLayout title="目录手册 · AI 设计生态仓库">
+	<Header />
+	<!-- page-header 是页面级标题(与站级 Header 两层);back 箭头已移除——logo 即回首页入口,不再重复 -->
 	<header class="page-header">
-		<a href="/" class="back" aria-label="返回首页">←</a>
 		<h1>目录手册</h1>
 		<span class="count">{tools.length} 个工具</span>
 	</header>
 	<main class="tool-grid">
 		{sorted.map((tool) => <ToolCard tool={tool} />)}
 	</main>
+	<Footer />
 </BaseLayout>
 
 <style>
 .page-header {
-	padding: var(--space-6) var(--space-8);
+	padding: var(--space-8) var(--space-8) 0;
 	display: flex;
-	align-items: center;
+	align-items: baseline;
 	gap: var(--space-4);
-	border-bottom: 1px solid var(--color-border);
-}
-.back {
-	text-decoration: none;
-	color: var(--color-text-primary);
-	font-size: var(--font-h4);
+	max-width: var(--container-max);
+	margin: 0 auto;
 }
 .page-header h1 {
 	font-size: var(--font-h3);
 }
 .count {
-	margin-left: auto;
 	font-size: var(--font-small);
 	color: var(--color-text-secondary);
 }

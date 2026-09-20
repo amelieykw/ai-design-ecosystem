@@ -1,7 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content'
 import DocLayout from '@/layouts/DocLayout.astro'
-import { TOOL_STATUS_COLORS, type ToolStatus } from '@/lib/status'
+import { getToolStatusColor } from '@/lib/status'
 
 export async function getStaticPaths() {
 	const tools = await getCollection('handbook')
@@ -21,7 +21,7 @@ export async function getStaticPaths() {
 
 const { tool } = Astro.props
 const { Content } = await render(tool)
-const statusColor = TOOL_STATUS_COLORS[tool.data.status as ToolStatus]
+const statusColor = getToolStatusColor(tool.data.status)
 ---
 
 <DocLayout
@@ -120,16 +120,5 @@ const statusColor = TOOL_STATUS_COLORS[tool.data.status as ToolStatus]
 }
 .links-row a {
 	color: var(--color-text-primary);
-}
-.sr-only {
-	position: absolute;
-	width: 1px;
-	height: 1px;
-	padding: 0;
-	margin: -1px;
-	overflow: hidden;
-	clip: rect(0, 0, 0, 0);
-	white-space: nowrap;
-	border: 0;
 }
 </style>

@@ -1,0 +1,56 @@
+---
+// 站级极简 Footer:站名 + 仓库链接 + 工作流狗粮展示位(验收项 G:
+// 本站自身即「DESIGN.md → tokens.css → 组件」工作流产出的范例,页脚明示)
+// TODO(REPO_URL): 本仓库尚未配置 git remote,先占位;接到真实仓库后替换此常量
+const REPO_URL = 'https://github.com/example/ai-design-ecosystem'
+---
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="site-name">AI 设计生态仓库</span>
+    <a href={REPO_URL} target="_blank" rel="noopener noreferrer">GitHub</a>
+    <span class="powered">
+      Powered by <a href="https://astro.build" target="_blank" rel="noopener noreferrer">Astro</a>
+      · DESIGN.md 工作流范例
+    </span>
+  </div>
+</footer>
+
+<style>
+.site-footer {
+  border-top: 1px solid var(--color-border);
+  margin-top: var(--space-8);
+}
+.footer-inner {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-8);
+  display: flex;
+  gap: var(--space-6);
+  align-items: center;
+  font-size: var(--font-small);
+  color: var(--color-text-secondary);
+}
+.footer-inner a {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+.footer-inner a:hover,
+.footer-inner a:focus-visible {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+}
+.powered {
+  margin-left: auto;
+}
+@media (max-width: 640px) {
+  .footer-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+  .powered {
+    margin-left: 0;
+  }
+}
+</style>

@@ -1,13 +1,13 @@
 ---
 // 工具卡片:handbook 列表的数据驱动卡片
-// 状态圆点颜色由 status 映射到 token(单一事实源在 src/lib/status)
-import { TOOL_STATUS_COLORS, type ToolStatus } from '@/lib/status'
+// 状态圆点颜色经 getToolStatusColor 映射到 token(单一事实源在 src/lib/status)
+import { getToolStatusColor } from '@/lib/status'
 const { tool } = Astro.props
 
-const statusColor = TOOL_STATUS_COLORS[tool.data.status as ToolStatus]
+const statusColor = getToolStatusColor(tool.data.status)
 ---
 
-<a href={`/handbook/${tool.id}/`} class="tool-card">
+<a href={`/handbook/${tool.id}/`} class="tool-card card-link">
   <div class="tool-meta">
     <span class="layer-badge">{tool.data.layer}</span>
     <span class="status-dot" style={`background: ${statusColor}`} aria-hidden="true"></span>
@@ -22,21 +22,9 @@ const statusColor = TOOL_STATUS_COLORS[tool.data.status as ToolStatus]
 </a>
 
 <style>
+/* 卡片基础(border/surface/hover+focus/transition)来自 global.css 的 .card-link,此处只留特有样式 */
 .tool-card {
   padding: var(--space-4);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
-  text-decoration: none;
-  color: var(--color-text-primary);
-  display: block;
-  transition: transform var(--duration-base) var(--ease-out),
-              box-shadow var(--duration-base) var(--ease-out);
-}
-.tool-card:hover,
-.tool-card:focus-visible {
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
 }
 .tool-meta {
   display: flex;
@@ -75,16 +63,5 @@ const statusColor = TOOL_STATUS_COLORS[tool.data.status as ToolStatus]
 .tag {
   font-size: var(--font-small);
   color: var(--color-text-secondary);
-}
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
 }
 </style>

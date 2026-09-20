@@ -3,20 +3,27 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* 字体栈统一走 tokens(单一事实源在 tokens.css,视觉契约在 DESIGN.md) */
 html {
-  /* 中文优先,Inter 已移除(spec §3.8:Inter 不作主字体;西文字形由系统中文字体兜底) */
-  font-family: 'PingFang SC', 'Source Han Sans SC', 'Noto Sans CJK SC', 'Microsoft YaHei', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-sans);
   font-size: 16px;
   color: var(--color-text-primary);
   background: var(--color-bg-primary);
   -webkit-font-smoothing: antialiased;
 }
 
+/* 焦点环(批 1 I-3 修复):银杏黄直接描 outline 在米白底上仅 ~2.1:1,
+   改为「白内环 + 黄外环」box-shadow 双环——白环贴米白底提供分隔,黄环贴深色卡对比 7.8:1。
+   抽成 --focus-ring 供 .card-link 等需要与 hover 阴影合成的场景拼接(见下)。 */
+:root {
+  --focus-ring: 0 0 0 2px var(--color-bg-primary), 0 0 0 4px var(--color-accent);
+}
+
 /* 以下规则包进 @layer base:Tailwind 已声明 base 在 utilities 之前,
    包层后 utilities 可正常覆盖;若留 unlayered 会静默压死 utilities 层 */
 @layer base {
   h1, h2, h3, .display {
-    font-family: 'Source Han Serif SC', 'Songti SC', 'Noto Serif CJK SC', serif;
+    font-family: var(--font-serif);
     font-weight: 700;
     line-height: 1.1;
   }
@@ -27,7 +34,7 @@ html {
   .display { font-size: var(--font-display); }
 
   code, pre {
-    font-family: 'JetBrains Mono', 'SF Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.9em;
   }
 
@@ -35,9 +42,45 @@ html {
   .no-bounce * { transition-timing-function: var(--ease-out) !important; }
   a { color: var(--color-link); text-underline-offset: 3px; }
 
-  /* 聚焦可达性(验收项 B) */
+  /* 聚焦可达性(验收项 B;批 1 I-3 对比度修复) */
   :focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 3px;
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  /* 屏幕阅读器专用工具类(批 1 M-2 收口:删除 ToolCard / [id] 的本地副本) */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* 可点击卡片基础样式(批 2 M-3 收口:原 ToolCard/SixLayerMap/EntryCards 三处重复)。
+     组件侧只保留特有样式(padding / min-height / primary 深底 / 内容排版等) */
+  .card-link {
+    display: block;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    text-decoration: none;
+    color: var(--color-text-primary);
+    transition: transform var(--duration-base) var(--ease-out),
+                box-shadow var(--duration-base) var(--ease-out);
+  }
+  .card-link:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+  /* 焦点态 = hover 阴影与焦点环拼接:本规则特异性高于裸 :focus-visible,
+     不拼接会把焦点环盖掉,键盘用户只剩位移线索 */
+  .card-link:focus-visible {
+    box-shadow: var(--shadow-md), var(--focus-ring);
+    transform: translateY(-2px);
   }
 }
