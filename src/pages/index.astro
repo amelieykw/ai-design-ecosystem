@@ -9,7 +9,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro'
 <BaseLayout title="AI 设计生态仓库">
 	<Header logoHeading />
 
-	<main>
+	<main class="container">
 		<p class="tagline">「Skill 教 AI 方法,DESIGN.md 告诉 AI 目标」</p>
 
 		<EntryCards />
@@ -20,10 +20,11 @@ import BaseLayout from '@/layouts/BaseLayout.astro'
 </BaseLayout>
 
 <style>
+/* 批 3 收口:max-width/margin/左右 padding 用 .container 工具类,
+   上下 padding 由本组件专属 main 规则提供 */
 main {
-	padding: var(--space-8);
-	max-width: var(--container-max);
-	margin: 0 auto;
+	padding-top: var(--space-8);
+	padding-bottom: var(--space-8);
 }
 .tagline {
 	font-family: var(--font-serif);

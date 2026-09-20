@@ -16,8 +16,8 @@ const navItems = [
 const isActive = (href: string) => Astro.url.pathname.startsWith(href)
 ---
 
-<header class="site-header">
-  <div class="header-inner">
+<header class="site-header divider-bottom">
+  <div class="header-inner container">
     {logoHeading ? (
       <h1 class="logo">
         <a href="/"><span class="mark" aria-hidden="true">◆</span>AI 设计生态仓库</a>
@@ -38,14 +38,11 @@ const isActive = (href: string) => Astro.url.pathname.startsWith(href)
 </header>
 
 <style>
-.site-header {
-  border-bottom: 1px solid var(--color-border);
-}
-/* 批 1 M-4:内容与 --container-max 对齐,不再贴屏幕最左 */
+/* 批 3 收口:border-bottom 改用 .divider-bottom 工具类;max-width/margin/左右 padding
+   用 .container 工具类(见 global.css utilities 层),仅留专属上下 padding 与 flex 布局 */
 .header-inner {
-  max-width: var(--container-max);
-  margin: 0 auto;
-  padding: var(--space-6) var(--space-8);
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-6);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -74,14 +71,14 @@ nav a {
   color: var(--color-text-primary);
   font-size: var(--font-body);
 }
+/* 批 3 收口:之前 nav a[aria-current='page'] 拆成两段(下划线/上色 + font-weight),
+   现合并为同选择器一段;hover 仍共用下划线样式 */
 nav a:hover,
 nav a[aria-current='page'] {
   text-decoration: underline;
   text-decoration-color: var(--color-accent);
   text-decoration-thickness: 2px;
   text-underline-offset: 6px;
-}
-nav a[aria-current='page'] {
   font-weight: 600;
 }
 @media (max-width: 640px) {

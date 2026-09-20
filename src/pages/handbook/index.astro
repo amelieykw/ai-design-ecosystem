@@ -12,24 +12,25 @@ const sorted = tools.sort((a, b) => a.data.title.localeCompare(b.data.title))
 <BaseLayout title="目录手册 · AI 设计生态仓库">
 	<Header />
 	<!-- page-header 是页面级标题(与站级 Header 两层);back 箭头已移除——logo 即回首页入口,不再重复 -->
-	<header class="page-header">
+	<header class="page-header container">
 		<h1>目录手册</h1>
 		<span class="count">{tools.length} 个工具</span>
 	</header>
-	<main class="tool-grid">
+	<main class="tool-grid container">
 		{sorted.map((tool) => <ToolCard tool={tool} />)}
 	</main>
 	<Footer />
 </BaseLayout>
 
 <style>
+/* 批 3 收口:max-width/margin/左右 padding 用 .container 工具类,
+   上下 padding 由本组件专属规则提供 */
 .page-header {
-	padding: var(--space-8) var(--space-8) 0;
+	padding-top: var(--space-8);
+	padding-bottom: 0;
 	display: flex;
 	align-items: baseline;
 	gap: var(--space-4);
-	max-width: var(--container-max);
-	margin: 0 auto;
 }
 .page-header h1 {
 	font-size: var(--font-h3);
@@ -39,11 +40,10 @@ const sorted = tools.sort((a, b) => a.data.title.localeCompare(b.data.title))
 	color: var(--color-text-secondary);
 }
 .tool-grid {
-	padding: var(--space-8);
+	padding-top: var(--space-8);
+	padding-bottom: var(--space-8);
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 	gap: var(--space-4);
-	max-width: var(--container-max);
-	margin: 0 auto;
 }
 </style>

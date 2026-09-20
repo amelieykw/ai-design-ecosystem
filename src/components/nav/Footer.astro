@@ -5,8 +5,8 @@
 const REPO_URL = 'https://github.com/example/ai-design-ecosystem'
 ---
 
-<footer class="site-footer">
-  <div class="footer-inner">
+<footer class="site-footer divider-top">
+  <div class="footer-inner container">
     <span class="site-name">AI 设计生态仓库</span>
     <a href={REPO_URL} target="_blank" rel="noopener noreferrer">GitHub</a>
     <span class="powered">
@@ -17,14 +17,14 @@ const REPO_URL = 'https://github.com/example/ai-design-ecosystem'
 </footer>
 
 <style>
+/* 批 3 收口:border-top 改用 .divider-top 工具类;max-width/margin/左右 padding
+   用 .container 工具类(见 global.css utilities 层),仅留上下 padding/flex/字号 */
 .site-footer {
-  border-top: 1px solid var(--color-border);
   margin-top: var(--space-8);
 }
 .footer-inner {
-  max-width: var(--container-max);
-  margin: 0 auto;
-  padding: var(--space-6) var(--space-8);
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-6);
   display: flex;
   gap: var(--space-6);
   align-items: center;

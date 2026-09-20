@@ -1,8 +1,6 @@
 @import "tailwindcss";
 @import './tokens.css';
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
 /* 字体栈统一走 tokens(单一事实源在 tokens.css,视觉契约在 DESIGN.md) */
 html {
   font-family: var(--font-sans);
@@ -83,4 +81,17 @@ html {
     box-shadow: var(--shadow-md), var(--focus-ring);
     transform: translateY(-2px);
   }
+}
+
+/* 工具类(批 3 收口:把 Header/Footer/index.astro/DocLayout/handbook 列表页
+   重复的 max-width/margin/padding 容器居中抽到一处;
+   divider-top/bottom 收口 Footer/Header 的 border 单行直引) */
+@layer utilities {
+  .container {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 var(--space-8);
+  }
+  .divider-top { border-top: 1px solid var(--color-border); }
+  .divider-bottom { border-bottom: 1px solid var(--color-border); }
 }

@@ -12,7 +12,7 @@ import Footer from '@/components/nav/Footer.astro'
 
 <BaseLayout title={`${title} · AI 设计生态仓库`}>
 	<Header />
-	<nav class="breadcrumb" aria-label="面包屑">
+	<nav class="breadcrumb container" aria-label="面包屑">
 		{breadcrumb.map((item, i) => (
 			<>
 				{i > 0 && <span class="sep" aria-hidden="true">/</span>}
@@ -31,12 +31,13 @@ import Footer from '@/components/nav/Footer.astro'
 </BaseLayout>
 
 <style>
+/* 批 3 收口:.breadcrumb max-width/margin/左右 padding 改用 .container 工具类,
+   仅留专属上下 padding 与字号/颜色 */
 .breadcrumb {
-	padding: var(--space-4) var(--space-8);
+	padding-top: var(--space-4);
+	padding-bottom: var(--space-4);
 	font-size: var(--font-small);
 	color: var(--color-text-secondary);
-	max-width: var(--container-max);
-	margin: 0 auto;
 }
 .breadcrumb a {
 	color: var(--color-text-primary);
@@ -52,6 +53,7 @@ import Footer from '@/components/nav/Footer.astro'
 .breadcrumb [aria-current='page'] {
 	color: var(--color-text-secondary);
 }
+/* .doc 走 800px 阅读宽度(比 --container-max 略窄,长文更易读),不用 .container */
 .doc {
 	max-width: 800px;
 	margin: 0 auto;
