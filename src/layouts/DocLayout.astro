@@ -1,0 +1,84 @@
+---
+// 详情页布局:面包屑 + 正文容器(md 渲染)
+interface Props {
+	title: string
+	breadcrumb: { label: string; href: string }[]
+}
+const { title, breadcrumb } = Astro.props
+import BaseLayout from './BaseLayout.astro'
+---
+
+<BaseLayout title={`${title} · AI 设计生态仓库`}>
+	<nav class="breadcrumb" aria-label="面包屑">
+		{breadcrumb.map((item, i) => (
+			<>
+				{i > 0 && <span class="sep" aria-hidden="true">/</span>}
+				{item.href ? (
+					<a href={item.href}>{item.label}</a>
+				) : (
+					<span aria-current="page">{item.label}</span>
+				)}
+			</>
+		))}
+	</nav>
+	<article class="doc">
+		<slot />
+	</article>
+</BaseLayout>
+
+<style>
+.breadcrumb {
+	padding: var(--space-4) var(--space-8);
+	font-size: var(--font-small);
+	color: var(--color-text-secondary);
+	max-width: var(--container-max);
+	margin: 0 auto;
+}
+.breadcrumb a {
+	color: var(--color-text-primary);
+	text-decoration: none;
+}
+.breadcrumb a:hover,
+.breadcrumb a:focus-visible {
+	text-decoration: underline;
+}
+.breadcrumb .sep {
+	margin: 0 var(--space-2);
+}
+.breadcrumb [aria-current='page'] {
+	color: var(--color-text-secondary);
+}
+.doc {
+	max-width: 800px;
+	margin: 0 auto;
+	padding: var(--space-8);
+}
+/* md 渲染的正文样式需要 :global(scoped 选择器够不到 slot 里渲染的 DOM)
+   注意:页面 h1 唯一化由页面侧 .doc-header h1 提供;正文里若出现 # 标题(html 中是 h1),
+   因为它是文档副标题而非页面主标题,允许 h2 兜底样式覆盖。 */
+.doc :global(h2) {
+	font-size: var(--font-h2);
+	margin: var(--space-8) 0 var(--space-4);
+}
+.doc :global(p) {
+	margin-bottom: var(--space-4);
+	line-height: 1.8;
+}
+.doc :global(pre) {
+	background: var(--color-surface);
+	border: 1px solid var(--color-border);
+	padding: var(--space-4);
+	border-radius: var(--radius-md);
+	overflow-x: auto;
+	margin-bottom: var(--space-4);
+}
+.doc :global(ul),
+.doc :global(ol) {
+	padding-left: var(--space-6);
+	margin-bottom: var(--space-4);
+}
+.doc :global(li) {
+	margin-bottom: var(--space-2);
+	line-height: 1.8;
+}
+</style>

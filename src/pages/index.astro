@@ -1,38 +1,27 @@
 ---
 import SixLayerMap from '@/components/home/SixLayerMap.astro'
 import EntryCards from '@/components/home/EntryCards.astro'
+import BaseLayout from '@/layouts/BaseLayout.astro'
 ---
 
-<html lang="zh-CN">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<title>AI 设计生态仓库</title>
-		<style is:global>
-			@import '../styles/global.css';
-		</style>
-	</head>
-	<body>
-		<header class="site-header">
-			<h1>AI 设计生态仓库</h1>
-			<nav aria-label="主导航">
-				<a href="/handbook/">目录手册</a>
-				<a href="/workflow/">工作流</a>
-				<a href="/cheatsheet/">速查</a>
-				<a href="/assets/">灵感库</a>
-			</nav>
-		</header>
+<BaseLayout title="AI 设计生态仓库">
+	<header class="site-header">
+		<h1>AI 设计生态仓库</h1>
+		<nav aria-label="主导航">
+			<a href="/handbook/">目录手册</a>
+			<a href="/workflow/">工作流</a>
+			<a href="/cheatsheet/">速查</a>
+			<a href="/assets/">灵感库</a>
+		</nav>
+	</header>
 
-		<main>
-			<p class="tagline">「Skill 教 AI 方法,DESIGN.md 告诉 AI 目标」</p>
+	<main>
+		<p class="tagline">「Skill 教 AI 方法,DESIGN.md 告诉 AI 目标」</p>
 
-			<EntryCards />
-			<SixLayerMap />
-		</main>
-	</body>
-</html>
+		<EntryCards />
+		<SixLayerMap />
+	</main>
+</BaseLayout>
 
 <style>
 .site-header {
