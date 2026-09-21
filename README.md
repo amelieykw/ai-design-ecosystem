@@ -31,7 +31,18 @@ npx astro check    # TypeScript 检查
 
 ## 部署
 
-GitHub Pages(待配置,见 .github/workflows/ 或 V1.2)
+经典 GitHub Pages 模式(零 Actions 依赖):
+
+1. 仓库 Settings → Pages → Build and deployment → Source 选 **"Deploy from a branch"** → Branch 选 **`gh-pages`** / **`(root)`**
+2. 每次发布前本地运行:
+   ```bash
+   npm run deploy    # build + 推送 dist/ 到 gh-pages 分支
+   ```
+3. 等 GitHub Pages 几十秒完成分发即可
+
+**为什么不走 Actions?** 部署到 gh-pages 分支是 Pages 自身的 quota,**不消耗 Actions 分钟数**,对私人仓库无任何限制。Actions 路径留给将来需要服务端构建(动态 OG 图、Sitemap 生成等)时再用。
+
+**为什么用 `gh-pages` 而不是手 push?** 单一命令覆盖 build + 推送,减少出错面;commit message 含 commit SHA 便于溯源。
 
 ## License
 
