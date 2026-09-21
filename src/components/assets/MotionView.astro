@@ -1,0 +1,190 @@
+---
+// 动效详情页主展示区:渲染 curves(缓动曲线)+ durations(时长标注),两部分独立存在才渲染
+// - 缓动曲线:每条一行 = 曲线名 + 小方块滑行 demo + 曲线 css 值(mono 小字)
+//   demo 纯 CSS:单一 @keyframes 定义复用,animation-timing-function 由数据驱动(inline style)
+//   infinite alternate,一个来回约 1.2s;装饰性质,整块 aria-hidden
+// - 时长:durations 简单列表 [name][XXXms],mono
+// - 零 JS;字段全部缺失时本组件渲染为空壳(外层 hasShowcase 已兜底占位)
+interface Props {
+	curves?: { name: string; css: string }[]
+	durations?: { name: string; ms: number }[]
+}
+const { curves, durations } = Astro.props
+
+// 曲线 css 值是用户数据,注入 animation-timing-function 前做合法性防御:
+// 只放行 cubic-bezier(...) / 关键字缓动(ease/linear/step 系列),其余丢弃该行的 demo 值
+const VALID_KEYWORDS = new Set([
+	'ease',
+	'linear',
+	'ease-in',
+	'ease-out',
+	'ease-in-out',
+	'step-start',
+	'step-end',
+])
+const isSafeTiming = (css: string): boolean => {
+	const c = css.trim()
+	if (VALID_KEYWORDS.has(c)) return true
+	if (/^cubic-bezier\(\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+\s*\)$/.test(c)) {
+		// cubic-bezier 4 个控制点须在 [0,1](x1/x2 约束;x 可为负被表达式挡掉,这里全段收紧)
+		const nums = c
+			.replace('cubic-bezier(', '')
+			.replace(')', '')
+			.split(',')
+			.map((n) => Number.parseFloat(n))
+		return nums.length === 4 && nums.every((n) => Number.isFinite(n) && n >= 0 && n <= 1)
+	}
+	return false
+}
+const safeCurves = curves
+	? curves.map((c) => ({ ...c, safeCss: isSafeTiming(c.css) ? c.css.trim() : undefined }))
+	: undefined
+---
+
+<div class="motion-view">
+	{safeCurves && safeCurves.length > 0 && (
+		<section class="mv-section" aria-labelledby="mv-curves-heading">
+			<h2 id="mv-curves-heading" class="mv-heading">缓动曲线</h2>
+			<ul class="curve-list">
+				{safeCurves.map((c) => (
+					<li class="curve-row">
+						<span class="curve-name">{c.name}</span>
+						{c.safeCss && (
+							<span class="curve-demo" aria-hidden="true">
+								<span
+									class="curve-dot"
+									style={`animation-name: curve-slide; animation-duration: 600ms; animation-timing-function: ${c.safeCss};`}
+								/>
+							</span>
+						)}
+						<code class="curve-css">{c.css}</code>
+					</li>
+				))}
+			</ul>
+		</section>
+	)}
+	{durations && durations.length > 0 && (
+		<section class="mv-section" aria-labelledby="mv-duration-heading">
+			<h2 id="mv-duration-heading" class="mv-heading">时长</h2>
+			<ul class="duration-list">
+				{durations.map((d) => (
+					<li class="duration-row">
+						<span class="duration-name">{d.name}</span>
+						<code class="duration-ms">{d.ms}ms</code>
+					</li>
+				))}
+			</ul>
+		</section>
+	)}
+</div>
+
+<style>
+.motion-view {
+	display: grid;
+	gap: var(--space-6);
+}
+.mv-heading {
+	font-size: var(--font-h4);
+	font-weight: 600;
+	margin: 0 0 var(--space-3);
+	color: var(--color-text-primary);
+}
+/* ---- 缓动曲线 ---- */
+.curve-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	gap: var(--space-3);
+}
+.curve-row {
+	display: grid;
+	/* 名字 | demo 滑道(占满剩余) | css 值 */
+	grid-template-columns: 7em 1fr auto;
+	align-items: center;
+	gap: var(--space-3);
+	padding: var(--space-3) var(--space-4);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-md);
+	background: var(--color-surface);
+}
+.curve-name {
+	font-family: var(--font-mono);
+	font-size: var(--font-small);
+	color: var(--color-text-primary);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+/* demo 滑道:一条细底线,方块沿它往返;
+   container-type 让关键帧里的 cqw = 滑道宽度,方块能精确滑到右端 */
+.curve-demo {
+	position: relative;
+	height: 24px;
+	border-bottom: 1px dashed var(--color-border);
+	overflow: hidden;
+	container-type: inline-size;
+}
+.curve-dot {
+	position: absolute;
+	left: 0;
+	bottom: 2px;
+	width: 14px;
+	height: 14px;
+	border-radius: 2px;
+	background: var(--color-text-primary);
+	/* iteration-count / direction / fill 由这里统一,只有 timing 交给数据 */
+	animation-iteration-count: infinite;
+	animation-direction: alternate;
+	will-change: transform;
+}
+@keyframes curve-slide {
+	from {
+		transform: translateX(0);
+	}
+	to {
+		/* 100% - 方块宽,不用 calc 内嵌布局值,直接预留滑道右端余量 */
+		transform: translateX(calc(100cqw - 16px));
+	}
+}
+/* 关闭动画的用户偏好:prefers-reduced-motion 下静止在起点 */
+@media (prefers-reduced-motion: reduce) {
+	.curve-dot {
+		animation: none;
+	}
+}
+.curve-css {
+	font-family: var(--font-mono);
+	font-size: var(--font-small);
+	color: var(--color-text-secondary);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	max-width: 22em;
+}
+/* ---- 时长 ---- */
+.duration-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	gap: var(--space-2);
+}
+.duration-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: var(--space-3);
+	padding: var(--space-2) var(--space-4);
+	border-bottom: 1px solid var(--color-border);
+}
+.duration-name {
+	font-size: var(--font-body);
+	color: var(--color-text-primary);
+}
+.duration-ms {
+	font-family: var(--font-mono);
+	font-size: var(--font-small);
+	color: var(--color-text-secondary);
+}
+</style>

@@ -1,0 +1,144 @@
+---
+// 排版详情页主展示区:渲染 typeScale(字号阶梯)+ grid(栅格示意),两部分独立存在才渲染
+// - 字号阶梯:语义化表格,[step 名][specimen 大字(实际 px + serif)][px 数值],按 px 降序
+// - 栅格示意:CSS grid 渲染 cols 列示意块(surface + border),下方标注真实 cols/gutter
+// - 只读展示,零 JS;字段全部缺失时本组件渲染为空壳(外层 hasShowcase 已兜底占位)
+interface Props {
+	typeScale?: { step: string; px: number }[]
+	grid?: { cols: number; gutter: string }
+}
+const { typeScale, grid } = Astro.props
+
+// 按 px 降序(拷贝后排序,不 mutate props)
+const sortedScale = typeScale ? [...typeScale].sort((a, b) => b.px - a.px) : undefined
+
+// gutter 是用户数据,注入 CSS 前白名单净化(纯数字+长度单位),不合法回退 token
+const safeGap = (g: string): string => {
+	const cleaned = g.trim()
+	return /^[\d.]+(px|rem|em|%|vw|vh|ch|ex)?$/.test(cleaned) ? cleaned : 'var(--space-4)'
+}
+const gap = grid ? safeGap(grid.gutter) : undefined
+
+// cols 极端值防御:示意块最多画 24 个(渲染上限只影响示意,不影响文字标注的真实值)
+const vizCols = grid ? Math.min(Math.max(grid.cols, 1), 24) : 0
+---
+
+<div class="layout-view">
+	{sortedScale && sortedScale.length > 0 && (
+		<section class="lv-section" aria-labelledby="lv-scale-heading">
+			<h2 id="lv-scale-heading" class="lv-heading">字号阶梯</h2>
+			<table class="type-scale">
+				<thead class="sr-only">
+					<tr>
+						<th scope="col">档位</th>
+						<th scope="col">示例</th>
+						<th scope="col">字号</th>
+					</tr>
+				</thead>
+				<tbody>
+					{sortedScale.map((s) => (
+						<tr>
+							<th scope="row" class="scale-step">{s.step}</th>
+							<td
+								class="scale-specimen"
+								style={`font-size: ${s.px}px;`}
+							>
+								字
+							</td>
+							<td class="scale-px">{s.px}px</td>
+						</tr>
+					))}
+				</tbody>
+			</table>
+		</section>
+	)}
+	{grid && (
+		<section class="lv-section" aria-labelledby="lv-grid-heading">
+			<h2 id="lv-grid-heading" class="lv-heading">栅格</h2>
+			<div
+				class="grid-viz"
+				style={`grid-template-columns: repeat(${vizCols}, 1fr); gap: ${gap};`}
+				role="img"
+				aria-label={`${grid.cols} 列栅格,列间距 ${grid.gutter}`}
+			>
+				{Array.from({ length: vizCols }).map(() => (
+					<span class="grid-cell" aria-hidden="true" />
+				))}
+			</div>
+			<p class="grid-caption">{grid.cols} 列 · 间距 {grid.gutter}</p>
+		</section>
+	)}
+</div>
+
+<style>
+.layout-view {
+	display: grid;
+	gap: var(--space-6);
+}
+.lv-heading {
+	font-size: var(--font-h4);
+	font-weight: 600;
+	margin: 0 0 var(--space-3);
+	color: var(--color-text-primary);
+}
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+/* 字号阶梯表:基线对齐让 step 名 / px 值贴着大字底线,阶梯感靠行高自然撑开 */
+.type-scale {
+	width: 100%;
+	border-collapse: collapse;
+}
+.type-scale th,
+.type-scale td {
+	border-bottom: 1px solid var(--color-border);
+	padding: var(--space-2) 0;
+	vertical-align: baseline;
+	text-align: left;
+	font-weight: normal;
+}
+.scale-step {
+	font-family: var(--font-mono);
+	font-size: var(--font-small);
+	color: var(--color-text-secondary);
+	white-space: nowrap;
+}
+.scale-specimen {
+	font-family: var(--font-serif);
+	line-height: 1.15;
+	color: var(--color-text-primary);
+	padding-inline: var(--space-4);
+	overflow-wrap: normal;
+}
+.scale-px {
+	font-family: var(--font-mono);
+	font-size: var(--font-small);
+	color: var(--color-text-secondary);
+	text-align: right;
+	white-space: nowrap;
+}
+/* 栅格示意:外层 gap 用真实 gutter,示意块仅固定高度占位 */
+.grid-viz {
+	display: grid;
+}
+.grid-cell {
+	height: 48px; /* 示意块固定视觉高度,与内容无关 */
+	background: var(--color-surface);
+	border: 1px solid var(--color-border);
+	border-radius: 2px;
+}
+.grid-caption {
+	margin: var(--space-3) 0 0;
+	font-family: var(--font-mono);
+	font-size: var(--font-small);
+	color: var(--color-text-secondary);
+}
+</style>

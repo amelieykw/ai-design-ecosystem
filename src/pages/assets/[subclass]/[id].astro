@@ -6,6 +6,8 @@ import { getCollection, render } from 'astro:content'
 import DocLayout from '@/layouts/DocLayout.astro'
 import ColorView from '@/components/assets/ColorView.astro'
 import FontView from '@/components/assets/FontView.astro'
+import LayoutView from '@/components/assets/LayoutView.astro'
+import MotionView from '@/components/assets/MotionView.astro'
 import { SUBCLASSES, collectionOf } from '@/lib/assets'
 
 export async function getStaticPaths() {
@@ -40,12 +42,20 @@ const palette = 'palette' in entry.data ? entry.data.palette : undefined
 const pairing = 'pairing' in entry.data ? entry.data.pairing : undefined
 const linkedAssets = 'linkedAssets' in entry.data ? entry.data.linkedAssets : undefined
 const code = 'code' in entry.data ? entry.data.code : undefined
+const typeScale = 'typeScale' in entry.data ? entry.data.typeScale : undefined
+const grid = 'grid' in entry.data ? entry.data.grid : undefined
+const curves = 'curves' in entry.data ? entry.data.curves : undefined
+const durations = 'durations' in entry.data ? entry.data.durations : undefined
 
 const hasShowcase =
 	(palette?.length ?? 0) > 0 ||
 	(pairing?.length ?? 0) > 0 ||
 	(linkedAssets?.length ?? 0) > 0 ||
-	(code !== undefined && code.length > 0)
+	(code !== undefined && code.length > 0) ||
+	(typeScale?.length ?? 0) > 0 ||
+	grid !== undefined ||
+	(curves?.length ?? 0) > 0 ||
+	(durations?.length ?? 0) > 0
 ---
 
 <DocLayout
@@ -79,6 +89,12 @@ const hasShowcase =
 		{code && code.length > 0 && (
 			<pre class="code-block"><code>{code}</code></pre>
 		)}
+		{(typeScale && typeScale.length > 0) || grid ? (
+			<LayoutView typeScale={typeScale} grid={grid} />
+		) : null}
+		{(curves && curves.length > 0) || durations ? (
+			<MotionView curves={curves} durations={durations} />
+		) : null}
 		{linkedAssets && linkedAssets.length > 0 && (
 			<div class="linked-assets">
 				<h2>关联资产</h2>
