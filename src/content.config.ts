@@ -107,6 +107,16 @@ const assetsStyles = defineCollection({
   schema: z.object({
     ...baseFields,
     references: z.array(z.string().url()).optional(),
+    /**
+     * linkedAssets:跨素材条目引用
+     * **格式统一为 "key/slug"**(必须带 key,例如 "colors/zen-blue")
+     *  - key:SUBCLASSES 之一(colors/fonts/layout/motion/textures/styles/components/prompts)
+     *  - slug:目标素材的 frontmatter name(文件名 slug)
+     *  - 同子类引用也须带 key(如 "styles/zen-blue")
+     *
+     * TODO V2: 升级为 z.string().refine() 在 build 阶段阻断 dangling reference
+     *   报错示例:[assets-styles] linkedAssets 引用了不存在的 colors/foo
+     */
     linkedAssets: z.array(z.string()).default([]),
   }),
 })
