@@ -8,7 +8,10 @@ import ColorView from '@/components/assets/ColorView.astro'
 import FontView from '@/components/assets/FontView.astro'
 import LayoutView from '@/components/assets/LayoutView.astro'
 import MotionView from '@/components/assets/MotionView.astro'
+import TextureView from '@/components/assets/TextureView.astro'
+import PromptView from '@/components/assets/PromptView.astro'
 import { SUBCLASSES, collectionOf } from '@/lib/assets'
+import { hasShowcase } from '@/lib/showcase'
 
 export async function getStaticPaths() {
 	// 双层展开:SUBCLASSES × 各自 collection 条目。集合为空(填数据前,Task 24)时
@@ -37,25 +40,23 @@ const { sc, entry } = Astro.props
 const { Content } = await render(entry)
 
 // 子类专属结构化字段:8 个集合 schema 各异,entry.data 是 union,
-// 用 'in' 守卫按字段名收窄(palette 仅 colors 声明,余同理),禁手写 any
+// 用 'in' 守卫按字段名收窄(各字段仅在对应子类声明,余同理),禁手写 any
+// hasShowcase 由 showcase.ts 提供(单一事实源,8 个谓词 + 聚合)
 const palette = 'palette' in entry.data ? entry.data.palette : undefined
 const pairing = 'pairing' in entry.data ? entry.data.pairing : undefined
-const linkedAssets = 'linkedAssets' in entry.data ? entry.data.linkedAssets : undefined
-const code = 'code' in entry.data ? entry.data.code : undefined
 const typeScale = 'typeScale' in entry.data ? entry.data.typeScale : undefined
 const grid = 'grid' in entry.data ? entry.data.grid : undefined
 const curves = 'curves' in entry.data ? entry.data.curves : undefined
 const durations = 'durations' in entry.data ? entry.data.durations : undefined
-
-const hasShowcase =
-	(palette?.length ?? 0) > 0 ||
-	(pairing?.length ?? 0) > 0 ||
-	(linkedAssets?.length ?? 0) > 0 ||
-	(code !== undefined && code.length > 0) ||
-	(typeScale?.length ?? 0) > 0 ||
-	grid !== undefined ||
-	(curves?.length ?? 0) > 0 ||
-	(durations?.length ?? 0) > 0
+const patterns = 'patterns' in entry.data ? entry.data.patterns : undefined
+const references = 'references' in entry.data ? entry.data.references : undefined
+const linkedAssets = 'linkedAssets' in entry.data ? entry.data.linkedAssets : undefined
+const level = 'level' in entry.data ? entry.data.level : undefined
+const code = 'code' in entry.data ? entry.data.code : undefined
+const preview = 'preview' in entry.data ? entry.data.preview : undefined
+const prompt = 'prompt' in entry.data ? entry.data.prompt : undefined
+const model = 'model' in entry.data ? entry.data.model : undefined
+const negative = 'negative' in entry.data ? entry.data.negative : undefined
 ---
 
 <DocLayout
@@ -86,26 +87,73 @@ const hasShowcase =
 		{pairing && pairing.length > 0 && (
 			<FontView pairing={pairing} />
 		)}
-		{code && code.length > 0 && (
-			<pre class="code-block"><code>{code}</code></pre>
-		)}
 		{(typeScale && typeScale.length > 0) || grid ? (
 			<LayoutView typeScale={typeScale} grid={grid} />
 		) : null}
 		{(curves && curves.length > 0) || durations ? (
 			<MotionView curves={curves} durations={durations} />
 		) : null}
-		{linkedAssets && linkedAssets.length > 0 && (
-			<div class="linked-assets">
-				<h2>关联资产</h2>
-				{/* linkedAssets 的引用格式未定(跨子类引用需子类前缀),链接契约 Task 24 填数据时定;
-				    先渲染纯文本列表,不 fabricated 链接防 404 */}
-				<ul>
-					{linkedAssets.map((id) => <li>{id}</li>)}
-				</ul>
-			</div>
+		{patterns && patterns.length > 0 && (
+			<TextureView patterns={patterns} />
 		)}
-		{!hasShowcase && <p class="placeholder">该子类专属展示 V2 上线。</p>}
+		{/* styles 内联:references(url 列表)+ linkedAssets(契约 "key/slug" 纯文本列表);
+		    跨素材链接需 refine 校验后再变链接(Task 14 处理,此处不 fabricated 链接防 404) */}
+		{((references && references.length > 0) ||
+			(linkedAssets && linkedAssets.length > 0)) && (
+			<section class="styles-block" aria-labelledby="styles-heading">
+				<h2 id="styles-heading" class="block-heading">风格参考</h2>
+				{references && references.length > 0 && (
+					<div class="styles-refs">
+						<h3>外部参考</h3>
+						<ul>
+							{references.map((url) => (
+								<li>
+									<a
+										href={url}
+										target="_blank"
+										rel="noopener noreferrer external"
+									>
+										{url}
+									</a>
+								</li>
+							))}
+						</ul>
+					</div>
+				)}
+				{linkedAssets && linkedAssets.length > 0 && (
+					<div class="styles-linked">
+						<h3>关联资产</h3>
+						{/* 契约 "key/slug":V2 升级为 refine 后才能解析为 /assets/<key>/<slug>/ 链接,
+						    当前仅做文本展示,避免 dangling reference 拼成 404 链接 */}
+						<ul>
+							{linkedAssets.map((ref) => <li>{ref}</li>)}
+						</ul>
+					</div>
+				)}
+			</section>
+		)}
+		{/* components 内联:level 徽章 + code(pre/code,样式由 DocLayout .doc :global 接管)
+		    + preview(可选图片)。无独立组件——结构轻量、内联更易读 */}
+		{level && (
+			<section class="components-block" aria-labelledby="components-heading">
+				<div class="components-head">
+					<h2 id="components-heading" class="block-heading">配件</h2>
+					<span class="level-badge">{level}</span>
+				</div>
+				{code && code.length > 0 && (
+					<pre class="code-block"><code>{code}</code></pre>
+				)}
+				{preview && (
+					<p class="components-preview">
+						<img src={preview} alt={`${entry.data.title} 预览`} loading="lazy" />
+					</p>
+				)}
+			</section>
+		)}
+		{prompt && model && (
+			<PromptView prompt={prompt} model={model} negative={negative} />
+		)}
+		{!hasShowcase(entry.data) && <p class="placeholder">该子类专属展示 V2 上线。</p>}
 	</section>
 
 	<section class="doc-body" aria-label="正文">
@@ -166,17 +214,54 @@ const hasShowcase =
 .showcase :global(pre.code-block) {
 	margin-bottom: 0;
 }
-.linked-assets h2 {
+/* styles 子类内联块:references + linkedAssets 两栏标题 + 列 */
+.block-heading {
 	font-size: var(--font-h4);
+	font-weight: 600;
 	margin: 0 0 var(--space-3);
+	color: var(--color-text-primary);
 }
-.linked-assets ul {
+.styles-block,
+.components-block {
+	margin-bottom: var(--space-6);
+}
+.styles-block h3 {
+	font-size: var(--font-body);
+	font-weight: 600;
+	margin: var(--space-3) 0 var(--space-2);
+	color: var(--color-text-secondary);
+}
+.styles-block ul {
 	padding-left: var(--space-6);
 	margin: 0;
 }
-.linked-assets li {
+.styles-block li {
 	margin-bottom: var(--space-2);
-	line-height: 1.8;
+	line-height: 1.6;
+	overflow-wrap: anywhere;
+}
+/* components 内联块:level 徽章与标题同行,右对齐 */
+.components-head {
+	display: flex;
+	align-items: baseline;
+	gap: var(--space-3);
+	margin-bottom: var(--space-3);
+}
+.level-badge {
+	font-family: var(--font-mono);
+	font-size: var(--font-small);
+	color: var(--color-text-on-dark);
+	background: var(--color-text-primary);
+	padding: 2px var(--space-2);
+	border-radius: var(--radius-sm);
+}
+.components-preview {
+	margin: var(--space-3) 0 0;
+}
+.components-preview img {
+	max-width: 100%;
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-md);
 }
 .placeholder {
 	color: var(--color-text-secondary);

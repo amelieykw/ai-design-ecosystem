@@ -1,0 +1,141 @@
+---
+// AIGC 咒语详情页主展示区:渲染 prompt 大文本块 + model 徽章 + 可选 negative 区块
+// - prompt/negative 各自独立复制按钮(与 ColorView 同构,走共享 copy-feedback)
+// - negative 用偏暗的 --color-status-missing 描边,与主 prompt 视觉分层
+// - navigator.clipboard 不可用时静默(与 ColorView 一致),不弹 toast
+interface Props {
+	prompt: string
+	model: string
+	negative?: string
+}
+const { prompt, model, negative } = Astro.props
+---
+
+<div class="prompt-view">
+	<section class="prompt-section" aria-labelledby="prompt-heading">
+		<header class="prompt-head">
+			<h2 id="prompt-heading" class="prompt-heading">咒语</h2>
+			<span class="prompt-model" aria-label={`生成模型 ${model}`}>{model}</span>
+		</header>
+		<div class="prompt-body">
+			<button
+				type="button"
+				class="copy-btn"
+				aria-label="复制咒语"
+				data-copy={prompt}
+			>
+				<span class="copy-text">{prompt}</span>
+				<span class="copy-feedback" aria-hidden="true">已复制 · 2 秒</span>
+			</button>
+		</div>
+	</section>
+	{negative && negative.length > 0 && (
+		<section class="prompt-negative" aria-labelledby="negative-heading">
+			<header class="prompt-head">
+				<h2 id="negative-heading" class="prompt-heading">负面提示词</h2>
+			</header>
+			<div class="prompt-body">
+				<button
+					type="button"
+					class="copy-btn copy-btn-negative"
+					aria-label="复制负面提示词"
+					data-copy={negative}
+				>
+					<span class="copy-text">{negative}</span>
+					<span class="copy-feedback" aria-hidden="true">已复制 · 2 秒</span>
+				</button>
+			</div>
+		</section>
+	)}
+</div>
+
+<script>
+	import { bindCopyButtons } from '@/scripts/copy-feedback'
+	// 两个选择器一起绑:同一个 bindCopyButtons 内部独立处理 WeakMap 计时器,
+	// 不同按钮的 data-copy 内容不同,互不干扰
+	bindCopyButtons('.prompt-view .copy-btn')
+</script>
+
+<style>
+.prompt-view {
+	display: grid;
+	gap: var(--space-4);
+}
+.prompt-section,
+.prompt-negative {
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-md);
+	background: var(--color-surface);
+	padding: var(--space-4);
+}
+.prompt-negative {
+	/* 负面词视觉降权:边框用偏暗的 status-missing,与主 prompt 分层 */
+	border-color: var(--color-status-missing);
+}
+.prompt-head {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: var(--space-3);
+	margin-bottom: var(--space-3);
+}
+.prompt-heading {
+	font-size: var(--font-h4);
+	font-weight: 600;
+	margin: 0;
+	color: var(--color-text-primary);
+}
+.prompt-model {
+	font-family: var(--font-mono);
+	font-size: var(--font-small);
+	color: var(--color-text-on-dark);
+	background: var(--color-text-primary);
+	padding: 2px var(--space-2);
+	border-radius: var(--radius-sm);
+}
+.prompt-body {
+	margin: 0;
+}
+/* 复制按钮 = 整块文本容器:左对齐、等宽字体、可读宽度 + 自动换行
+   与 ColorView 复制按钮结构同构:.copy-text / .copy-feedback 通过 opacity 互斥
+   不动布局;min-height 留出反馈文案高度,避免切换抖动 */
+.copy-btn {
+	appearance: none;
+	display: block;
+	width: 100%;
+	text-align: left;
+	padding: var(--space-3) var(--space-4);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-md);
+	background: var(--color-bg-primary);
+	color: var(--color-text-primary);
+	font-family: var(--font-mono);
+	font-size: var(--font-small);
+	cursor: pointer;
+	position: relative;
+	min-height: 4em;
+}
+.copy-btn:hover {
+	border-color: var(--color-text-primary);
+}
+.copy-text,
+.copy-feedback {
+	display: block;
+	text-align: left;
+	white-space: pre-wrap;
+	word-break: break-word;
+	transition: opacity var(--duration-fast) var(--ease-out);
+}
+.copy-feedback {
+	position: absolute;
+	inset: var(--space-3) var(--space-4) auto;
+	opacity: 0;
+	color: var(--color-text-primary);
+}
+.copy-btn.is-copied .copy-text {
+	opacity: 0;
+}
+.copy-btn.is-copied .copy-feedback {
+	opacity: 1;
+}
+</style>

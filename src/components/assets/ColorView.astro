@@ -3,6 +3,7 @@
 // - 复用 Swatch tile variant(name/role/hex 三件套),由本组件负责循环 + 复制逻辑
 // - Swatch 保持 dumb atom 性质:不感知复制态;复制反馈只在本组件内控制 .copy-feedback 的 opacity
 // - navigator.clipboard 不可用(老浏览器/http)时静默不复制,反馈也保持 idle(无 toast 三禁)
+// - 复制核心由 @/scripts/copy-feedback 提供,本组件仅负责按钮 DOM + 视觉反馈样式
 import Swatch from '@/components/assets/Swatch.astro'
 
 interface Props {
@@ -20,7 +21,7 @@ const { palette } = Astro.props
 					type="button"
 					class="copy-btn"
 					aria-label={`复制 ${c.hex}`}
-					data-hex={c.hex}
+					data-copy={c.hex}
 				>
 					<span class="copy-hex">{c.hex}</span>
 					<span class="copy-feedback" aria-hidden="true">已复制 · 2 秒</span>
@@ -31,33 +32,8 @@ const { palette } = Astro.props
 </div>
 
 <script>
-	// 复制 hex:click + keyboard(Enter/Space)由 button 原生覆盖,这里只接 click
-	// 反馈用 opacity 切换 + 2 秒回 idle,不弹 toast、不动布局
-	// 多次连按同一 hex 时,后一次重置定时器,避免提前消失
-	const timers = new WeakMap<HTMLButtonElement, number>()
-	document.querySelectorAll<HTMLButtonElement>('.copy-btn').forEach((btn) => {
-		btn.addEventListener('click', async () => {
-			const hex = btn.dataset.hex ?? ''
-			if (!hex) return
-			try {
-				if (navigator.clipboard?.writeText) {
-					await navigator.clipboard.writeText(hex)
-				} else {
-					return // 不弹提示,保持 idle(DESIGN.md 三禁:toast 禁)
-				}
-			} catch {
-				return
-			}
-			const prev = timers.get(btn)
-			if (prev) window.clearTimeout(prev)
-			btn.classList.add('is-copied')
-			const t = window.setTimeout(() => {
-				btn.classList.remove('is-copied')
-				timers.delete(btn)
-			}, 2000)
-			timers.set(btn, t)
-		})
-	})
+	import { bindCopyButtons } from '@/scripts/copy-feedback'
+	bindCopyButtons('.copy-btn')
 </script>
 
 <style>

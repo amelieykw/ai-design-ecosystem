@@ -1,0 +1,134 @@
+---
+// 纹理详情页主展示区:把 patterns 数组渲染成 live CSS 演示网格
+// - 每格 = 预览块(把 css 值注入 style,真渲染背景)+ 名称标注
+// - preview 字段是可选图片 URL,存在时叠在 live 块上方显示(预览图优先)
+// - css 是用户数据,白名单净化:只允许 background-* 家族的声明,其余丢弃该行的 css
+// - 不合 css 白名单的格子仍展示名称与原文(只是不渲染 live 块),不静默丢失用户数据
+interface Props {
+	patterns: { name: string; css: string; preview?: string }[]
+}
+const { patterns } = Astro.props
+
+// 防御性净化:用户数据注入 style 前做白名单校验
+// 策略:按 `;` 拆声明,逐条匹配 ^\s*background(-[a-z-]+)?\s*: —— 只放行 background 系列
+// 值(value)再做内容过滤:禁 `expression(`、`url(javascript:` 触发 XSS 的 payload;`url(http`
+// 允许,因为可能就是合法图片地址
+// 不通过的格子 safeCss=undefined(渲染层降级到名称+原文,不渲染 live 块)
+const isSafeBgValue = (v: string): boolean => {
+	const t = v.trim()
+	if (!t) return false
+	if (/expression\s*\(/i.test(t)) return false
+	if (/url\(\s*javascript:/i.test(t)) return false
+	return true
+}
+const safeBg = (css: string): string | undefined => {
+	const decls = css
+		.split(';')
+		.map((d) => d.trim())
+		.filter(Boolean)
+	const kept = decls.filter((d) => /^\s*background(-[a-z-]+)?\s*:/i.test(d))
+	if (kept.length === 0) return undefined
+	const validated = kept.filter((d) => {
+		const colonIdx = d.indexOf(':')
+		if (colonIdx < 0) return false
+		const value = d.slice(colonIdx + 1)
+		return isSafeBgValue(value)
+	})
+	if (validated.length === 0) return undefined
+	return validated.join('; ')
+}
+const safePatterns = patterns.map((p) => ({ ...p, safeCss: safeBg(p.css) }))
+---
+
+<div class="texture-view">
+	<div class="texture-grid">
+		{safePatterns.map((p) => (
+			<figure class="texture-cell">
+				<div
+					class={`texture-preview${p.safeCss ? '' : ' is-empty'}`}
+					style={p.safeCss ? p.safeCss : undefined}
+				>
+					{!p.safeCss && <span class="texture-fallback" aria-hidden="true">无 live 演示</span>}
+					{p.preview && (
+						<img
+							class="texture-preview-img"
+							src={p.preview}
+							alt={`${p.name} 预览图`}
+							loading="lazy"
+						/>
+					)}
+				</div>
+				<figcaption class="texture-caption">
+					<span class="texture-name">{p.name}</span>
+					{/* 不合白名单时此处仍展示原文,符合"不静默丢数据"防御原则 */}
+					<code class="texture-css">{p.css}</code>
+				</figcaption>
+			</figure>
+		))}
+	</div>
+</div>
+
+<style>
+.texture-view {
+	display: grid;
+	gap: var(--space-4);
+}
+.texture-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	gap: var(--space-4);
+}
+.texture-cell {
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-2);
+}
+/* live 块:固定高度以便"无可视背景"时也有占位 */
+.texture-preview {
+	position: relative;
+	aspect-ratio: 3 / 2;
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-md);
+	overflow: hidden;
+	background: var(--color-surface);
+}
+/* 不合白名单时:不渲染 css,显示文本提示但不显示 css 摘要避免视觉混淆 */
+.texture-preview.is-empty {
+	display: grid;
+	place-items: center;
+}
+.texture-fallback {
+	font-family: var(--font-mono);
+	font-size: var(--font-small);
+	color: var(--color-text-secondary);
+}
+.texture-preview-img {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+.texture-caption {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	padding: 0 var(--space-2);
+}
+.texture-name {
+	font-size: var(--font-body);
+	color: var(--color-text-primary);
+}
+.texture-css {
+	font-family: var(--font-mono);
+	font-size: var(--font-small);
+	color: var(--color-text-secondary);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	word-break: break-all;
+}
+</style>
