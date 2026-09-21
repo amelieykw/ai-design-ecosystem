@@ -1,0 +1,173 @@
+---
+// ���类瀑布页:/assets/<key>/,读取对应 assets-* collection 按 addedAt 降序
+// CSS columns 实现瀑布流;集合为空时显示空态卡片(V2 批次填充文案,不引导跳转)
+import { getCollection } from 'astro:content'
+import Header from '@/components/nav/Header.astro'
+import Footer from '@/components/nav/Footer.astro'
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import { SUBCLASSES, collectionOf } from '@/lib/assets'
+import { withBase } from '@/lib/base'
+
+export async function getStaticPaths() {
+  return SUBCLASSES.map((sc) => ({ params: { subclass: sc.key }, props: { sc } }))
+}
+
+const { sc } = Astro.props
+const items = (await getCollection(collectionOf(sc))).sort(
+  (a, b) => b.data.addedAt.localeCompare(a.data.addedAt)
+)
+---
+
+<BaseLayout title={`${sc.name} · 灵感资产库`}>
+	<Header />
+	<nav class="breadcrumb container" aria-label="面包屑">
+		<a href={withBase('/')}>首页</a>
+		<span class="sep" aria-hidden="true">/</span>
+		<a href={withBase('/assets/')}>灵感库</a>
+		<span class="sep" aria-hidden="true">/</span>
+		<span aria-current="page">{sc.name}</span>
+	</nav>
+	<header class="page-header container">
+		<h1>{sc.name}</h1>
+		<span class="count">{items.length} 条素材</span>
+	</header>
+	<p class="page-intro container">{sc.desc}</p>
+	<main class="masonry container" aria-label={`${sc.name}素材列表`}>
+		{items.length === 0 && (
+			<div class="empty-card" role="status">
+				<h2 class="empty-title">该子类素材筹备中</h2>
+				<p class="empty-desc">V2 批次填充,敬请期待。</p>
+			</div>
+		)}
+		{items.map((item) => (
+			<a href={withBase(`/assets/${sc.key}/${item.id}/`)} class="asset-card card-link">
+				<h2 class="asset-name">{item.data.title}</h2>
+				<p class="asset-desc">{item.data.description}</p>
+				<div class="asset-meta">
+					<span class="asset-tags">
+						{item.data.tags.slice(0, 3).map((t: string) => <span class="tag">#{t}</span>)}
+					</span>
+					<time class="asset-date" datetime={item.data.addedAt}>{item.data.addedAt}</time>
+				</div>
+			</a>
+		))}
+	</main>
+	<Footer />
+</BaseLayout>
+
+<style>
+/* 面包屑复用 DocLayout 同款结构与样式(本页非 doc 正文,自建实现) */
+.breadcrumb {
+	padding-top: var(--space-4);
+	padding-bottom: var(--space-4);
+	font-size: var(--font-small);
+	color: var(--color-text-secondary);
+}
+.breadcrumb a {
+	color: var(--color-text-primary);
+	text-decoration: none;
+}
+.breadcrumb a:hover,
+.breadcrumb a:focus-visible {
+	text-decoration: underline;
+}
+.breadcrumb .sep {
+	margin: 0 var(--space-2);
+}
+.breadcrumb [aria-current='page'] {
+	color: var(--color-text-secondary);
+}
+.page-header {
+	padding-top: var(--space-8);
+	padding-bottom: 0;
+	display: flex;
+	align-items: baseline;
+	gap: var(--space-4);
+}
+.page-header h1 {
+	font-size: var(--font-h3);
+}
+.count {
+	font-size: var(--font-small);
+	color: var(--color-text-secondary);
+}
+.page-intro {
+	padding-top: var(--space-4);
+	font-size: var(--font-body);
+	color: var(--color-text-secondary);
+}
+/* 瀑布流:CSS columns,窄屏降列;card-link 的 hover 位移在列布局内不破坏排版 */
+.masonry {
+	padding-top: var(--space-8);
+	padding-bottom: var(--space-8);
+	columns: 3;
+	column-gap: var(--space-4);
+}
+.asset-card {
+	break-inside: avoid;
+	margin-bottom: var(--space-4);
+	padding: var(--space-4);
+}
+/* 空态卡:非链接,不给 hover 抬升;仅描边卡片式说明 */
+.empty-card {
+	break-inside: avoid;
+	margin-bottom: var(--space-4);
+	padding: var(--space-6);
+	border: 1px dashed var(--color-border);
+	border-radius: var(--radius-md);
+	background: var(--color-surface);
+}
+.asset-name {
+	font-family: var(--font-serif);
+	/* h2 语义修复 skipped-heading 后显式锁回原视觉字号 */
+	font-size: var(--font-h4);
+	margin-bottom: var(--space-2);
+}
+.asset-desc {
+	font-size: var(--font-small);
+	color: var(--color-text-secondary);
+	margin-bottom: var(--space-3);
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+.asset-meta {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: var(--space-2);
+	flex-wrap: wrap;
+}
+.asset-tags {
+	display: flex;
+	gap: var(--space-2);
+	flex-wrap: wrap;
+}
+.tag {
+	font-size: var(--font-small);
+	color: var(--color-text-secondary);
+}
+.asset-date {
+	font-size: var(--font-small);
+	color: var(--color-text-secondary);
+}
+/* 空态:仅文字说明,不引导跳转 */
+.empty-card {
+	cursor: default;
+}
+.empty-title {
+	font-size: var(--font-h4);
+	margin-bottom: var(--space-2);
+}
+.empty-desc {
+	font-size: var(--font-body);
+	color: var(--color-text-secondary);
+}
+@media (max-width: 1024px) {
+	.masonry { columns: 2; }
+}
+@media (max-width: 640px) {
+	.masonry { columns: 1; }
+}
+</style>

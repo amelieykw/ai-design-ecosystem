@@ -1,0 +1,105 @@
+---
+// 灵感资产库入口页:8 子类网格,条目数从对应 collection 实时统计
+// (空集合显示 0,不隐藏卡片——子类路由先立住,V2 批次填数据后计数自动更新)
+import { getCollection } from 'astro:content'
+import Header from '@/components/nav/Header.astro'
+import Footer from '@/components/nav/Footer.astro'
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import { SUBCLASSES, collectionOf } from '@/lib/assets'
+import { withBase } from '@/lib/base'
+
+// 每个子类并行读取 collection,长度即实时条目数
+const counts = await Promise.all(
+  SUBCLASSES.map(async (sc) => (await getCollection(collectionOf(sc))).length)
+)
+const subclassCards = SUBCLASSES.map((sc, i) => ({ ...sc, index: i + 1, count: counts[i] }))
+const total = counts.reduce((sum, n) => sum + n, 0)
+---
+
+<BaseLayout title="灵感资产库 · AI 设计生态仓库">
+	<Header />
+	<header class="page-header container">
+		<h1>灵感资产库</h1>
+		<span class="count">{total} 条素材</span>
+	</header>
+	<p class="page-intro container">
+		按子类组织的可复用设计资产:配色、字体、排版、动效、纹理、风格、配件与 AIGC 咒语,选一个入口开始。
+	</p>
+	<main class="subclass-grid container" aria-label="素材子类">
+		{subclassCards.map((sc) => (
+			<a href={withBase(`/assets/${sc.key}/`)} class="subclass-card card-link">
+				<div class="card-head">
+					<span class="card-index" aria-hidden="true">{String(sc.index).padStart(2, '0')}</span>
+					<span class="card-count">{sc.count} 条</span>
+				</div>
+				<h2 class="card-name">{sc.name}</h2>
+				<p class="card-desc">{sc.desc}</p>
+			</a>
+		))}
+	</main>
+	<Footer />
+</BaseLayout>
+
+<style>
+/* 页面骨架沿用 handbook 列表页模式:header/intro/grid 三段 */
+.page-header {
+	padding-top: var(--space-8);
+	padding-bottom: 0;
+	display: flex;
+	align-items: baseline;
+	gap: var(--space-4);
+}
+.page-header h1 {
+	font-size: var(--font-h3);
+}
+.count {
+	font-size: var(--font-small);
+	color: var(--color-text-secondary);
+}
+.page-intro {
+	padding-top: var(--space-4);
+	font-size: var(--font-body);
+	color: var(--color-text-secondary);
+}
+.subclass-grid {
+	padding-top: var(--space-8);
+	padding-bottom: var(--space-8);
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: var(--space-4);
+}
+.subclass-card {
+	padding: var(--space-4);
+}
+.card-head {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	margin-bottom: var(--space-2);
+}
+.card-index {
+	font-family: var(--font-mono);
+	font-size: var(--font-small);
+	color: var(--color-accent); /* 序号为纯装饰,银杏黄仅装饰用途 */
+}
+.card-count {
+	font-size: var(--font-small);
+	color: var(--color-text-secondary);
+}
+.card-name {
+	font-family: var(--font-serif);
+	/* h2 语义修复 skipped-heading 后显式锁回原视觉字号 */
+	font-size: var(--font-h4);
+	margin-bottom: var(--space-2);
+}
+.card-desc {
+	font-size: var(--font-small);
+	color: var(--color-text-secondary);
+}
+@media (max-width: 1024px) {
+	.subclass-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px) {
+	.subclass-grid { grid-template-columns: 1fr; }
+}
+</style>
