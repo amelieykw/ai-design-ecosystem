@@ -8,6 +8,7 @@ const { title, breadcrumb } = Astro.props
 import BaseLayout from './BaseLayout.astro'
 import Header from '@/components/nav/Header.astro'
 import Footer from '@/components/nav/Footer.astro'
+import { withBase } from '@/lib/base'
 ---
 
 <BaseLayout title={`${title} · AI 设计生态仓库`}>
@@ -17,7 +18,7 @@ import Footer from '@/components/nav/Footer.astro'
 			<>
 				{i > 0 && <span class="sep" aria-hidden="true">/</span>}
 				{item.href ? (
-					<a href={item.href}>{item.label}</a>
+					<a href={withBase(item.href)}>{item.label}</a>
 				) : (
 					<span aria-current="page">{item.label}</span>
 				)}

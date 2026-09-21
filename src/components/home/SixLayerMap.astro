@@ -2,11 +2,12 @@
 // 六层全景图:内容源文档 §一 的架构分层,静态数据(层数 ≠ 工具条目数)。
 // 层枚举与 content.config.ts 的 schema 共用 src/lib/layers.ts 单一事实源
 import { LAYERS } from '@/lib/layers'
+import { withBase } from '@/lib/base'
 ---
 
 <section class="layers" aria-label="AI 设计生态六层架构">
   {LAYERS.map((layer) => (
-    <a href={`/handbook/?layer=${encodeURIComponent(layer.id)}`} class="layer-card card-link">
+    <a href={withBase(`/handbook/?layer=${encodeURIComponent(layer.id)}`)} class="layer-card card-link">
       <div class="layer-id">{layer.id}</div>
       <div class="layer-desc">{layer.desc}</div>
     </a>

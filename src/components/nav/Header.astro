@@ -2,34 +2,37 @@
 // 站级统一 Header:logo + 主导航,全站共用
 // (收口原首页 site-header 与 handbook 列表页 page-header 两套重复实现)
 // logoHeading:首页传 true——logo 即页面 h1(保持原首页语义);其余页面用 <p>,各页自带 h1
+import { withBase } from '@/lib/base'
+
 interface Props {
   logoHeading?: boolean
 }
 const { logoHeading = false } = Astro.props
 
+// href 存根路径,渲染时经 withBase 加部署前缀(子路径部署兼容)
 const navItems = [
   { label: '目录手册', href: '/handbook/' },
   { label: '工作流', href: '/workflow/' },
   { label: '速查', href: '/cheatsheet/' },
   { label: '灵感库', href: '/assets/' },
 ]
-const isActive = (href: string) => Astro.url.pathname.startsWith(href)
+const isActive = (href: string) => Astro.url.pathname.startsWith(withBase(href))
 ---
 
 <header class="site-header divider-bottom">
   <div class="header-inner container">
     {logoHeading ? (
       <h1 class="logo">
-        <a href="/"><span class="mark" aria-hidden="true">◆</span>AI 设计生态仓库</a>
+        <a href={withBase('/')}><span class="mark" aria-hidden="true">◆</span>AI 设计生态仓库</a>
       </h1>
     ) : (
       <p class="logo">
-        <a href="/"><span class="mark" aria-hidden="true">◆</span>AI 设计生态仓库</a>
+        <a href={withBase('/')}><span class="mark" aria-hidden="true">◆</span>AI 设计生态仓库</a>
       </p>
     )}
     <nav aria-label="主导航">
       {navItems.map((item) => (
-        <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+        <a href={withBase(item.href)} aria-current={isActive(item.href) ? 'page' : undefined}>
           {item.label}
         </a>
       ))}

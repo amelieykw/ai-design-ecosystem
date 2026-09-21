@@ -2,12 +2,13 @@
 // 工具卡片:handbook 列表的数据驱动卡片
 // 状态圆点颜色经 getToolStatusColor 映射到 token(单一事实源在 src/lib/status)
 import { getToolStatusColor } from '@/lib/status'
+import { withBase } from '@/lib/base'
 const { tool } = Astro.props
 
 const statusColor = getToolStatusColor(tool.data.status)
 ---
 
-<a href={`/handbook/${tool.id}/`} class="tool-card card-link">
+<a href={withBase(`/handbook/${tool.id}/`)} class="tool-card card-link">
   <div class="tool-meta">
     <span class="layer-badge">{tool.data.layer}</span>
     <span class="status-dot" style={`background: ${statusColor}`} aria-hidden="true"></span>
