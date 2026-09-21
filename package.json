@@ -9,7 +9,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "deploy": "npm run build && gh-pages -d dist --dotfiles --message 'deploy: build from $(git rev-parse --short HEAD)'",
+    "deploy": "npm run build && gh-pages -d dist --dotfiles --nojekyll --message 'deploy: build from $(git rev-parse --short HEAD)'",
     "astro": "astro"
   },
   "dependencies": {
