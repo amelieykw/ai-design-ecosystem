@@ -7,9 +7,10 @@
   },
   "scripts": {
     "dev": "astro dev",
+    "check": "astro check",
     "build": "astro build",
     "preview": "astro preview",
-    "deploy": "npm run build && gh-pages -d dist --dotfiles --nojekyll --message 'deploy: build from $(git rev-parse --short HEAD)'",
+    "deploy": "npm run check && npm run build && gh-pages -d dist --dotfiles --nojekyll --message 'deploy: build from $(git rev-parse --short HEAD)'",
     "astro": "astro"
   },
   "dependencies": {

@@ -1,6 +1,6 @@
 ---
 // ���类瀑布页:/assets/<key>/,读取对应 assets-* collection 按 addedAt 降序
-// CSS columns 实现瀑布流;集合为空时显示空态卡片(V2 批次填充文案,不引导跳转)
+// CSS columns 实现瀑布流;集合为空时显示空态卡片(第一批整理中文案,不引导跳转)
 import { getCollection } from 'astro:content'
 import Header from '@/components/nav/Header.astro'
 import Footer from '@/components/nav/Footer.astro'
@@ -32,11 +32,12 @@ const items = (await getCollection(collectionOf(sc))).sort(
 		<span class="count">{items.length} 条素材</span>
 	</header>
 	<p class="page-intro container">{sc.desc}</p>
+	<!-- 素材卡链接契约:/assets/<key>/<id>/ 由详情页路由提供(Task 14);
+	     填数据(Task 24)前必须先落地详情页,否则构建成功但线上 404 -->
 	<main class="masonry container" aria-label={`${sc.name}素材列表`}>
 		{items.length === 0 && (
 			<div class="empty-card" role="status">
-				<h2 class="empty-title">该子类素材筹备中</h2>
-				<p class="empty-desc">V2 批次填充,敬请期待。</p>
+				<p class="empty-desc">第一批素材正在整理中,敬请期待。</p>
 			</div>
 		)}
 		{items.map((item) => (
@@ -108,7 +109,7 @@ const items = (await getCollection(collectionOf(sc))).sort(
 	margin-bottom: var(--space-4);
 	padding: var(--space-4);
 }
-/* 空态卡:非链接,不给 hover 抬升;仅描边卡片式说明 */
+/* 空态卡:非链接,不给 hover 抬升;仅描边卡片式说明,不引导跳转 */
 .empty-card {
 	break-inside: avoid;
 	margin-bottom: var(--space-4);
@@ -116,6 +117,7 @@ const items = (await getCollection(collectionOf(sc))).sort(
 	border: 1px dashed var(--color-border);
 	border-radius: var(--radius-md);
 	background: var(--color-surface);
+	cursor: default;
 }
 .asset-name {
 	font-family: var(--font-serif);
@@ -152,17 +154,10 @@ const items = (await getCollection(collectionOf(sc))).sort(
 	font-size: var(--font-small);
 	color: var(--color-text-secondary);
 }
-/* 空态:仅文字说明,不引导跳转 */
-.empty-card {
-	cursor: default;
-}
-.empty-title {
-	font-size: var(--font-h4);
-	margin-bottom: var(--space-2);
-}
 .empty-desc {
 	font-size: var(--font-body);
 	color: var(--color-text-secondary);
+	margin: 0;
 }
 @media (max-width: 1024px) {
 	.masonry { columns: 2; }

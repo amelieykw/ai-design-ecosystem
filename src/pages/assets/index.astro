@@ -9,6 +9,9 @@ import { SUBCLASSES, collectionOf } from '@/lib/assets'
 import { withBase } from '@/lib/base'
 
 // 每个子类并行读取 collection,长度即实时条目数
+// 性能结论(2026-09 审查):Astro Content Layer 在 build 启动时即全量解析所有注册集合,
+// getCollection 是内存过滤,8 次并发调用无额外 IO;数据量增长时真正成本在详情页 render(),
+// 与计数无关。勿引入 count 脚本/预生成 JSON 等过早优化。
 const counts = await Promise.all(
   SUBCLASSES.map(async (sc) => (await getCollection(collectionOf(sc))).length)
 )
