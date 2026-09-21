@@ -4,7 +4,8 @@
 // styles→关联资产列表;无专属结构化数据时显示 V2 占位,正文 md 始终渲染
 import { getCollection, render } from 'astro:content'
 import DocLayout from '@/layouts/DocLayout.astro'
-import Swatch from '@/components/assets/Swatch.astro'
+import ColorView from '@/components/assets/ColorView.astro'
+import FontView from '@/components/assets/FontView.astro'
 import { SUBCLASSES, collectionOf } from '@/lib/assets'
 
 export async function getStaticPaths() {
@@ -36,11 +37,15 @@ const { Content } = await render(entry)
 // 子类专属结构化字段:8 个集合 schema 各异,entry.data 是 union,
 // 用 'in' 守卫按字段名收窄(palette 仅 colors 声明,余同理),禁手写 any
 const palette = 'palette' in entry.data ? entry.data.palette : undefined
+const pairing = 'pairing' in entry.data ? entry.data.pairing : undefined
 const linkedAssets = 'linkedAssets' in entry.data ? entry.data.linkedAssets : undefined
 const code = 'code' in entry.data ? entry.data.code : undefined
 
 const hasShowcase =
-	(palette?.length ?? 0) > 0 || (linkedAssets?.length ?? 0) > 0 || (code !== undefined && code.length > 0)
+	(palette?.length ?? 0) > 0 ||
+	(pairing?.length ?? 0) > 0 ||
+	(linkedAssets?.length ?? 0) > 0 ||
+	(code !== undefined && code.length > 0)
 ---
 
 <DocLayout
@@ -66,11 +71,10 @@ const hasShowcase =
 
 	<section class="showcase" aria-label="素材展示区">
 		{palette && palette.length > 0 && (
-			<div class="swatch-grid">
-				{palette.map((c) => (
-					<Swatch hex={c.hex} name={c.name} role={c.role} variant="tile" />
-				))}
-			</div>
+			<ColorView palette={palette} />
+		)}
+		{pairing && pairing.length > 0 && (
+			<FontView pairing={pairing} />
 		)}
 		{code && code.length > 0 && (
 			<pre class="code-block"><code>{code}</code></pre>
@@ -138,11 +142,6 @@ const hasShowcase =
 /* 主展示区:与 header、正文间各留一档间距 */
 .showcase {
 	margin-bottom: var(--space-8);
-}
-.swatch-grid {
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-	gap: var(--space-4);
 }
 .code-block {
 	margin: 0;

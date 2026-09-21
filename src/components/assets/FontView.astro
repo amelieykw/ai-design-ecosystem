@@ -1,0 +1,99 @@
+---
+// 字体详情页主展示区:把 pairing 数组渲染成"字体对 specimen 卡片"
+// - 每对 = 一张卡片:role 标签 + family 大字号渲染 + weight 标注 + source 可选外链
+// - specimen 渲染:用 family 直接作为 CSS font-family,fallback 走全局 token
+//   (role 由调用方语义约定:'title'→serif / 'body'→sans / 'mono'→mono)
+// - 卡片只读展示,无交互(无复制、无切换)
+interface Props {
+	pairing: { role: string; family: string; weight: number; source?: string }[]
+}
+const { pairing } = Astro.props
+
+// role → fallback 字体族映射:role 是内容契约(semantic),fallback 走 token
+// 出现未约定 role 时,fallback 走 sans(最不破坏版面)
+const fallbackByRole: Record<string, string> = {
+	title: 'var(--font-serif)',
+	body: 'var(--font-sans)',
+	mono: 'var(--font-mono)',
+}
+---
+
+<div class="font-view">
+	{pairing.map((f) => {
+		const fallback = fallbackByRole[f.role] ?? 'var(--font-sans)'
+		// family 是用户输入,可能含特殊字符;用单引号包裹 + 双重 escape 防 XSS(Astro 默认
+		// 已 escape,但 inline style 走的是字符串拼接而非 HTML 插值)
+		const safeFamily = f.family.replace(/'/g, "\\'")
+		return (
+			<article class="specimen" data-role={f.role}>
+				<header class="specimen-head">
+					<span class="specimen-role">{f.role}</span>
+					<span class="specimen-weight">weight {f.weight}</span>
+				</header>
+				<p
+					class="specimen-text"
+					style={`font-family: '${safeFamily}', ${fallback}; font-weight: ${f.weight};`}
+				>
+					{f.family}
+				</p>
+				{f.source && (
+					<a
+						class="specimen-source"
+						href={f.source}
+						rel="noopener noreferrer external"
+					>
+						来源 ↗
+					</a>
+				)}
+			</article>
+		)
+	})}
+</div>
+
+<style>
+.font-view {
+	display: grid;
+	gap: var(--space-4);
+}
+.specimen {
+	padding: var(--space-6);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-md);
+	background: var(--color-surface);
+}
+.specimen-head {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: var(--space-3);
+	margin-bottom: var(--space-3);
+	font-size: var(--font-small);
+	color: var(--color-text-secondary);
+}
+.specimen-role {
+	color: var(--color-text-primary);
+	font-family: var(--font-mono);
+}
+.specimen-weight {
+	font-family: var(--font-mono);
+}
+/* specimen 大字号:走 --font-h1,具体字族由 inline style 覆盖 */
+.specimen-text {
+	margin: 0 0 var(--space-3);
+	font-size: var(--font-h1);
+	line-height: 1.2;
+	color: var(--color-text-primary);
+	/* 留些空白防止部分字体自身 word-break 异常 */
+	word-break: break-word;
+}
+.specimen-source {
+	display: inline-block;
+	font-size: var(--font-small);
+	color: var(--color-text-secondary);
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+.specimen-source:hover {
+	color: var(--color-text-primary);
+}
+</style>

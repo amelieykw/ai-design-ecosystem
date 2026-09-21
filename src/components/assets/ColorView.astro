@@ -1,0 +1,117 @@
+---
+// 配色详情页主展示区:把 palette 数组渲染成色卡网格 + 每张色卡的"复制 hex"交互
+// - 复用 Swatch tile variant(name/role/hex 三件套),由本组件负责循环 + 复制逻辑
+// - Swatch 保持 dumb atom 性质:不感知复制态;复制反馈只在本组件内控制 .copy-feedback 的 opacity
+// - navigator.clipboard 不可用(老浏览器/http)时静默不复制,反馈也保持 idle(无 toast 三禁)
+import Swatch from '@/components/assets/Swatch.astro'
+
+interface Props {
+	palette: { name: string; hex: string; role?: string }[]
+}
+const { palette } = Astro.props
+---
+
+<div class="color-view">
+	<div class="swatch-grid">
+		{palette.map((c) => (
+			<div class="swatch-cell" data-hex={c.hex}>
+				<Swatch hex={c.hex} name={c.name} role={c.role} variant="tile" />
+				<button
+					type="button"
+					class="copy-btn"
+					aria-label={`复制 ${c.hex}`}
+					data-hex={c.hex}
+				>
+					<span class="copy-hex">{c.hex}</span>
+					<span class="copy-feedback" aria-hidden="true">已复制 · 2 秒</span>
+				</button>
+			</div>
+		))}
+	</div>
+</div>
+
+<script>
+	// 复制 hex:click + keyboard(Enter/Space)由 button 原生覆盖,这里只接 click
+	// 反馈用 opacity 切换 + 2 秒回 idle,不弹 toast、不动布局
+	// 多次连按同一 hex 时,后一次重置定时器,避免提前消失
+	const timers = new WeakMap<HTMLButtonElement, number>()
+	document.querySelectorAll<HTMLButtonElement>('.copy-btn').forEach((btn) => {
+		btn.addEventListener('click', async () => {
+			const hex = btn.dataset.hex ?? ''
+			if (!hex) return
+			try {
+				if (navigator.clipboard?.writeText) {
+					await navigator.clipboard.writeText(hex)
+				} else {
+					return // 不弹提示,保持 idle(DESIGN.md 三禁:toast 禁)
+				}
+			} catch {
+				return
+			}
+			const prev = timers.get(btn)
+			if (prev) window.clearTimeout(prev)
+			btn.classList.add('is-copied')
+			const t = window.setTimeout(() => {
+				btn.classList.remove('is-copied')
+				timers.delete(btn)
+			}, 2000)
+			timers.set(btn, t)
+		})
+	})
+</script>
+
+<style>
+.color-view {
+	/* 与详情页 .showcase 配合;此处只管子元素 */
+}
+.swatch-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	gap: var(--space-4);
+}
+.swatch-cell {
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-2);
+}
+/* 复制按钮:全宽铺底,mono 字体显 hex;
+   默认显示 hex,is-copied 时切到反馈文案(同位置互斥,opacity 过渡,不动 layout) */
+.copy-btn {
+	appearance: none;
+	display: block;
+	width: 100%;
+	padding: var(--space-2) var(--space-3);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-md);
+	background: var(--color-surface);
+	color: var(--color-text-secondary);
+	font-family: var(--font-mono);
+	font-size: var(--font-small);
+	cursor: pointer;
+	position: relative;
+	min-height: 2.5em; /* 预留反馈文案高度,避免切换抖 */
+}
+.copy-btn:hover {
+	color: var(--color-text-primary);
+	border-color: var(--color-text-primary);
+}
+/* focus-visible 双环由全局 :focus-visible 提供,组件内不再叠加 */
+.copy-hex,
+.copy-feedback {
+	display: block;
+	text-align: left;
+	transition: opacity var(--duration-fast) var(--ease-out);
+}
+.copy-feedback {
+	position: absolute;
+	inset: var(--space-2) var(--space-3) auto;
+	opacity: 0;
+	color: var(--color-text-primary);
+}
+.copy-btn.is-copied .copy-hex {
+	opacity: 0;
+}
+.copy-btn.is-copied .copy-feedback {
+	opacity: 1;
+}
+</style>
