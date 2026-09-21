@@ -3,7 +3,7 @@ name: brand-creator-pink
 title: 创作者粉
 description: 玫粉+青的强对比创作者配色,适合内容平台、社交、个人 IP
 tags: [品牌, 高对比]
-featured: true
+featured: false
 addedAt: "2026-09-21"
 palette:
   - { name: 创作者粉, hex: "#EC4899", role: primary }

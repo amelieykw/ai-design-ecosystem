@@ -3,7 +3,7 @@ name: a11y-navy-yellow
 title: 无障碍海军黄
 description: 深海军+警示黄,WCAG AAA 优先的可访问性配色,适合政府/医疗
 tags: [高对比, 文档, 医疗, 后台]
-featured: true
+featured: false
 addedAt: "2026-09-21"
 palette:
   - { name: 海军深, hex: "#0F172A", role: text }
