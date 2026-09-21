@@ -2,7 +2,7 @@
 name: check-design-md
 title: "校验 DESIGN.md"
 description: "lint 视觉契约文件,自动查 WCAG 对比度等硬性问题"
-tags: [design.md, 校验, WCAG, DESIGN.md]
+tags: [校验, WCAG, DESIGN.md]
 featured: true
 addedAt: "2026-09-18"
 section: 校验

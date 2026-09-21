@@ -18,6 +18,7 @@ const grouped = SECTIONS.map((section) => ({
   items: entries
     .filter((e) => e.data.section === section)
     .sort((a, b) => a.data.order - b.data.order),
+  // 空 section 刻意隐藏(防死锚点),勿改成空态卡——整页空 ≠ 单节空
 })).filter((g) => g.items.length > 0)
 ---
 
