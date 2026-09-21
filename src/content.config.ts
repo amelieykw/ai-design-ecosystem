@@ -74,7 +74,7 @@ const assetsFonts = defineCollection({
         z.object({
           role: z.string(),
           family: z.string(),
-          weight: z.number().int(),
+          weight: z.number().int().min(1).max(1000),
           source: z.string().url().optional(),
         })
       )
@@ -86,8 +86,10 @@ const assetsLayout = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/assets-layout' }),
   schema: z.object({
     ...baseFields,
-    typeScale: z.array(z.object({ step: z.string(), px: z.number().int() })).optional(),
-    grid: z.object({ cols: z.number().int(), gutter: z.string() }).optional(),
+    typeScale: z
+      .array(z.object({ step: z.string(), px: z.number().int().min(8).max(200) }))
+      .optional(),
+    grid: z.object({ cols: z.number().int().min(1), gutter: z.string() }).optional(),
   }),
 })
 

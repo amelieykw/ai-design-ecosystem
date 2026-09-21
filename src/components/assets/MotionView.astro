@@ -27,6 +27,7 @@ const isSafeTiming = (css: string): boolean => {
 	if (VALID_KEYWORDS.has(c)) return true
 	if (/^cubic-bezier\(\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+\s*\)$/.test(c)) {
 		// cubic-bezier 4 个控制点须在 [0,1](x1/x2 约束;x 可为负被表达式挡掉,这里全段收紧)
+		// 故意拒绝 y∈(1,∞) 的 overshoot 曲线(cubic-bezier 合法但违反 DESIGN.md 禁弹跳),非 bug 勿"修"
 		const nums = c
 			.replace('cubic-bezier(', '')
 			.replace(')', '')
@@ -138,6 +139,8 @@ const safeCurves = curves
 	animation-direction: alternate;
 	will-change: transform;
 }
+/* ⚠️ 被 inline style 按名引用(animation-name: curve-slide),勿改名或挪出 scoped style——
+   Astro 不重命名 scoped keyframes 是隐式契约 */
 @keyframes curve-slide {
 	from {
 		transform: translateX(0);
