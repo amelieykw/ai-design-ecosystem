@@ -52,7 +52,15 @@ const assetsColors = defineCollection({
   schema: z.object({
     ...baseFields,
     palette: z
-      .array(z.object({ name: z.string(), hex: z.string(), role: z.string() }))
+      .array(
+        z.object({
+          name: z.string(),
+          hex: z
+            .string()
+            .regex(/^#[0-9A-Fa-f]{6}$/, 'hex 必须是 #XXXXXX 6位格式'),
+          role: z.string(),
+        })
+      )
       .optional(),
   }),
 })
@@ -67,7 +75,7 @@ const assetsFonts = defineCollection({
           role: z.string(),
           family: z.string(),
           weight: z.number().int(),
-          source: z.string().optional(),
+          source: z.string().url().optional(),
         })
       )
       .optional(),
