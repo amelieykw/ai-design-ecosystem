@@ -1,0 +1,1 @@
+import{t as e}from"./copy-feedback.kemDclg9.js";e(`.prompt-view .copy-btn`);
