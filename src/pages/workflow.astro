@@ -1,0 +1,185 @@
+---
+// 工作流教程单页:四步法(定方向 → 立契约 → 生成 → 终检)+ 两个装机坑
+// 内容忠实转写自全景图 §5.4(通用项目工作流)与 §5.2b(执行中的两个坑)
+// 叙述型长文,不走 collection;.astro 写死。骨架同 handbook 列表页(Header+main+Footer)
+import Header from '@/components/nav/Header.astro'
+import Footer from '@/components/nav/Footer.astro'
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import { withBase } from '@/lib/base'
+
+const cheatsheetHref = withBase('/cheatsheet/')
+const cheatsheetAnchor = (section: string) => `${cheatsheetHref}#section-${section}`
+---
+
+<BaseLayout title="工作流教程 · AI 设计生态仓库">
+	<Header />
+	<main class="workflow container">
+		<header class="page-header">
+			<h1>工作流教程</h1>
+			<p class="subtitle">四步法:定方向 → 立契约 → 生成 → 终检</p>
+		</header>
+
+		<ol class="steps" aria-label="四步工作流">
+			<li class="step">
+				<span class="step-no" aria-hidden="true">01</span>
+				<h2>定方向</h2>
+				<p>
+					ui-ux-pro-max 按行业推理生成设计系统骨架;项目已有品牌规范的,跳过此步。
+				</p>
+				<pre><code>uipro init --ai claude --global</code></pre>
+				<a class="to-cheatsheet" href={cheatsheetAnchor('装机')}>跳到速查手册:装机 →</a>
+			</li>
+			<li class="step">
+				<span class="step-no" aria-hidden="true">02</span>
+				<h2>立契约</h2>
+				<p>
+					在项目根写 DESIGN.md。新项目手写 tokens + 理念;老项目用
+					<code>/impeccable document</code> 从现有代码反向生成。写完先校验一遍,对比度不达 WCAG AA 会被直接报出。
+				</p>
+				<pre><code>npx @google/design.md lint DESIGN.md</code></pre>
+				<a class="to-cheatsheet" href={cheatsheetAnchor('校验')}>跳到速查手册:校验 →</a>
+			</li>
+			<li class="step">
+				<span class="step-no" aria-hidden="true">03</span>
+				<h2>生成</h2>
+				<p>
+					frontend-design 按 DESIGN.md 契约生成;电影质感项目显式点名
+					high-end-visual-design(与 frontend-design 职责重叠,二选一主用,特殊风格项目时才点名 taste)。
+					动效细节交给 emil 的 <code>animate</code> 与 <code>review-animations</code>。
+				</p>
+				<a class="to-cheatsheet" href={cheatsheetAnchor('装机')}>跳到速查手册:装机 →</a>
+			</li>
+			<li class="step">
+				<span class="step-no" aria-hidden="true">04</span>
+				<h2>终检</h2>
+				<p>
+					<code>/impeccable audit</code>(a11y / 性能 / 响应式)加 <code>/impeccable polish</code> 收尾;
+					成品页——包括外部工具生成的——用 <code>npx impeccable detect &lt;URL&gt;</code> 扫一遍。
+				</p>
+				<pre><code>npx impeccable detect &lt;URL&gt;</code></pre>
+				<p class="note">
+					全局 hook 已生效:每次 Edit/Write UI 文件自动即时扫,Stop 时全规则深扫,不用手动跑。
+				</p>
+				<a class="to-cheatsheet" href={cheatsheetAnchor('扫描')}>跳到速查手册:扫描 →</a>
+			</li>
+		</ol>
+
+		<section class="pitfalls" aria-labelledby="pitfalls-heading">
+			<h2 id="pitfalls-heading">两个装机坑</h2>
+			<article class="pitfall">
+				<h3>impeccable 安装器不走系统代理</h3>
+				<p>
+					GitHub releases 直连超时 → 用 <code>https://gh-proxy.com/</code> 前缀手动下载 bundle,
+					<em>务必核对 sha256</em>(<code>.sig.json</code> 清单里有官方哈希)。
+				</p>
+			</article>
+			<article class="pitfall">
+				<h3>同名 skill 双源抢激活</h3>
+				<p>
+					<code>skills add</code> 装完同名 skill 后,旧 plugin 要停用
+					(<code>claude plugin disable</code>):同一会话里两个同名 skill 会抢 description 匹配。
+				</p>
+			</article>
+		</section>
+	</main>
+	<Footer />
+</BaseLayout>
+
+<style>
+/* 阅读宽度:比 .container(1280)窄的长文宽度,本页自定 */
+.workflow {
+	max-width: 800px;
+	padding-top: var(--space-8);
+	padding-bottom: var(--space-16);
+}
+.page-header {
+	margin-bottom: var(--space-12);
+}
+.page-header h1 {
+	font-size: var(--font-h3);
+	margin-bottom: var(--space-2);
+}
+.subtitle {
+	color: var(--color-text-secondary);
+	font-size: var(--font-body);
+}
+
+/* 步骤列表:序号 mono + accent,与 assets 入口页同风格 */
+.steps {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-12);
+}
+.step-no {
+	display: block;
+	font-family: var(--font-mono);
+	font-size: var(--font-small);
+	color: var(--color-accent); /* 序号为纯装饰,银杏黄仅装饰用途 */
+	margin-bottom: var(--space-2);
+}
+.step h2 {
+	font-size: var(--font-h4);
+	margin-bottom: var(--space-3);
+}
+.step p {
+	line-height: 1.8;
+	margin-bottom: var(--space-3);
+}
+.step pre {
+	background: var(--color-surface);
+	border: 1px solid var(--color-border);
+	padding: var(--space-4);
+	border-radius: var(--radius-md);
+	overflow-x: auto;
+	margin-bottom: var(--space-3);
+}
+.step code {
+	font-family: var(--font-mono);
+	font-size: 0.9em;
+}
+.note {
+	font-size: var(--font-small);
+	color: var(--color-text-secondary);
+}
+.to-cheatsheet {
+	font-size: var(--font-small);
+}
+
+/* 装机坑:--color-status-optional 描边警示 */
+.pitfalls {
+	margin-top: var(--space-16);
+	padding-top: var(--space-8);
+	border-top: 1px solid var(--color-border);
+}
+.pitfalls h2 {
+	font-size: var(--font-h4);
+	margin-bottom: var(--space-6);
+}
+.pitfall {
+	border: 1px solid var(--color-status-optional);
+	border-radius: var(--radius-md);
+	padding: var(--space-4);
+	margin-bottom: var(--space-4);
+	background: var(--color-surface);
+}
+.pitfall:last-child {
+	margin-bottom: 0;
+}
+.pitfall h3 {
+	font-size: var(--font-body);
+	font-weight: 600;
+	margin-bottom: var(--space-2);
+}
+.pitfall p {
+	font-size: var(--font-small);
+	line-height: 1.8;
+	margin-bottom: 0;
+}
+.pitfall em {
+	font-style: normal;
+	font-weight: 600;
+}
+</style>

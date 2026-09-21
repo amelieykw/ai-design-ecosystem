@@ -1,0 +1,244 @@
+---
+// 速查手册页:按 section(装机/校验/扫描/速记)分组的命令速查
+// - 左锚点导航 + 右命令区块,>=1024px 两栏,移动端堆叠
+// - 每条命令 frontmatter.command 渲染为可复制按钮(共享 bindCopyButtons)
+// - collection 为空时显示空态(防御;当前有 4 条正式数据)
+import { getCollection } from 'astro:content'
+import Header from '@/components/nav/Header.astro'
+import Footer from '@/components/nav/Footer.astro'
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import { withBase } from '@/lib/base'
+
+// section 展示顺序固定(与 schema 枚举一致);每节内条目按 order 升序
+const SECTIONS = ['装机', '校验', '扫描', '速记'] as const
+
+const entries = await getCollection('cheatsheet')
+const grouped = SECTIONS.map((section) => ({
+  section,
+  items: entries
+    .filter((e) => e.data.section === section)
+    .sort((a, b) => a.data.order - b.data.order),
+})).filter((g) => g.items.length > 0)
+---
+
+<BaseLayout title="速查手册 · AI 设计生态仓库">
+	<Header />
+	<header class="page-header container">
+		<h1>速查手册</h1>
+		<span class="count">{entries.length} 条命令</span>
+	</header>
+	<p class="page-intro container">
+		装机、校验、扫描一条条贴下来就能跑;点击命令块即复制。
+	</p>
+
+	{entries.length === 0 ? (
+		<main class="container empty-state">
+			<p>速查内容还在整理中,先看看<a href={withBase('/workflow/')}>工作流教程</a>。</p>
+		</main>
+	) : (
+		<main class="cheat-layout container">
+			<nav class="section-nav" aria-label="速查章节">
+				<ul>
+					{grouped.map((g) => (
+						<li>
+							<a href={`#section-${g.section}`}>
+								{g.section}
+								<span class="nav-count">{g.items.length}</span>
+							</a>
+						</li>
+					))}
+				</ul>
+			</nav>
+			<div class="section-blocks">
+				{grouped.map((g) => (
+					<section class="section-block" id={`section-${g.section}`} aria-labelledby={`heading-${g.section}`}>
+						<h2 id={`heading-${g.section}`}>{g.section}</h2>
+						{g.items.map((item) => (
+							<article class="command-entry">
+								<h3 class="command-name">{item.data.title}</h3>
+								<p class="command-desc">{item.data.description}</p>
+								{item.data.command ? (
+									<button
+										type="button"
+										class="copy-btn"
+										aria-label={`复制命令:${item.data.title}`}
+										data-copy={item.data.command}
+									>
+										<span class="copy-text">{item.data.command}</span>
+										<span class="copy-feedback" aria-hidden="true">已复制 · 2 秒</span>
+									</button>
+								) : null}
+								{item.data.tags.length > 0 && (
+									<div class="command-tags">
+										{item.data.tags.map((t: string) => <span class="tag">#{t}</span>)}
+									</div>
+								)}
+							</article>
+						))}
+					</section>
+				))}
+			</div>
+		</main>
+	)}
+	<Footer />
+</BaseLayout>
+
+<script>
+	import { bindCopyButtons } from '@/scripts/copy-feedback'
+	bindCopyButtons('.cheat-layout .copy-btn')
+</script>
+
+<style>
+/* 页面骨架沿用 handbook/assets 列表页模式:header/intro/main 三段 */
+.page-header {
+	padding-top: var(--space-8);
+	padding-bottom: 0;
+	display: flex;
+	align-items: baseline;
+	gap: var(--space-4);
+}
+.page-header h1 {
+	font-size: var(--font-h3);
+}
+.count {
+	font-size: var(--font-small);
+	color: var(--color-text-secondary);
+}
+.page-intro {
+	padding-top: var(--space-4);
+	font-size: var(--font-body);
+	color: var(--color-text-secondary);
+}
+
+/* 两栏:左锚点导航(粘性)+ 右区块;>=1024px 生效,窄屏堆叠 */
+.cheat-layout {
+	padding-top: var(--space-8);
+	padding-bottom: var(--space-8);
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--space-8);
+}
+@media (min-width: 1024px) {
+	.cheat-layout {
+		grid-template-columns: 180px 1fr;
+		gap: var(--space-12);
+	}
+	.section-nav {
+		position: sticky;
+		top: var(--space-8);
+		align-self: start;
+	}
+}
+.section-nav ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: var(--space-2);
+}
+.section-nav a {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: var(--space-2);
+	text-decoration: none;
+	color: var(--color-text-primary);
+	padding: var(--space-2) var(--space-3);
+	border-left: 2px solid var(--color-border);
+}
+.section-nav a:hover {
+	border-left-color: var(--color-accent);
+}
+.nav-count {
+	font-family: var(--font-mono);
+	font-size: var(--font-small);
+	color: var(--color-text-secondary);
+}
+
+.section-block {
+	margin-bottom: var(--space-12);
+}
+.section-block:last-child {
+	margin-bottom: 0;
+}
+.section-block h2 {
+	font-size: var(--font-h3);
+	margin-bottom: var(--space-6);
+	/* 锚点跳转不顶到视口边缘 */
+	scroll-margin-top: var(--space-8);
+}
+
+.command-entry {
+	padding: var(--space-4);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-md);
+	background: var(--color-surface);
+	margin-bottom: var(--space-4);
+}
+.command-entry:last-child {
+	margin-bottom: 0;
+}
+.command-name {
+	font-family: var(--font-serif);
+	font-size: var(--font-h4);
+	margin-bottom: var(--space-2);
+}
+.command-desc {
+	font-size: var(--font-small);
+	color: var(--color-text-secondary);
+	margin-bottom: var(--space-3);
+}
+
+/* 复制按钮:整块命令即按钮,结构同 PromptView(.copy-text/.copy-feedback opacity 互斥) */
+.copy-btn {
+	appearance: none;
+	display: block;
+	width: 100%;
+	text-align: left;
+	padding: var(--space-3) var(--space-4);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-sm);
+	background: var(--color-bg-primary);
+	color: var(--color-text-primary);
+	font-family: var(--font-mono);
+	font-size: var(--font-small);
+	cursor: pointer;
+	position: relative;
+	min-height: 2.8em;
+}
+.copy-btn:hover {
+	border-color: var(--color-text-primary);
+}
+.copy-text,
+.copy-feedback {
+	display: block;
+	text-align: left;
+	white-space: pre-wrap;
+	word-break: break-word;
+	transition: opacity var(--duration-fast) var(--ease-out);
+}
+.copy-feedback {
+	position: absolute;
+	inset: var(--space-3) var(--space-4) auto;
+	opacity: 0;
+	color: var(--color-text-primary);
+}
+.copy-btn.is-copied .copy-text {
+	opacity: 0;
+}
+.copy-btn.is-copied .copy-feedback {
+	opacity: 1;
+}
+
+.command-tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-2);
+	margin-top: var(--space-3);
+}
+.tag {
+	font-size: var(--font-small);
+	color: var(--color-text-secondary);
+}
+</style>

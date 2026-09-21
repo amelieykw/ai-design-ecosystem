@@ -37,12 +37,16 @@ const handbook = defineCollection({
 })
 
 // cheatsheet 集合(SPEC §5.3)
+// command:命令原文放 frontmatter 而非正文——速查页复制按钮的 data-copy 需要
+// 原始字符串;从渲染后的 Content DOM 提取需客户端脚本且脆弱。optional 遵循
+// 本文件顶部"渐进补全"约定,页面侧对缺失 command 的条目只渲染正文不渲染复制行。
 const cheatsheet = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/cheatsheet' }),
   schema: z.object({
     ...baseFields,
     section: z.enum(['装机', '校验', '扫描', '速记']),
     order: z.number().int(),
+    command: z.string().optional(),
   }),
 })
 
