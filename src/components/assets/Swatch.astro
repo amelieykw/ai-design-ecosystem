@@ -1,0 +1,66 @@
+---
+// 单色卡组件(assets 模块共用,colors 子类专属展示的基础单元):
+// - variant="tile" 详情页大色卡:色块占位 + 底部信息行(name/role/hex)
+// - variant="dot"  瀑布页卡片色点:小色块,无文字(排布由调用方的容器控制)
+// name/role 可选(渐进补全契约:hex 是唯一必须信息,其余缺失时只显示 hex)
+interface Props {
+	hex: string
+	name?: string
+	role?: string
+	variant?: 'tile' | 'dot'
+}
+const { hex, name, role, variant = 'tile' } = Astro.props
+const label = [name, role].filter(Boolean).join(' · ')
+---
+
+{variant === 'tile' ? (
+	<div class="swatch-tile">
+		<div class="swatch-chip" style={`background: ${hex}`} />
+		<p class="swatch-info">
+			{label && <span class="swatch-label">{label}</span>}
+			<span class="swatch-hex">{hex}</span>
+		</p>
+	</div>
+) : (
+	<span class="swatch-dot" style={`background: ${hex}`} />
+)}
+
+<style>
+.swatch-tile {
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-md);
+	overflow: hidden;
+	background: var(--color-surface);
+}
+.swatch-chip {
+	width: 100%;
+	aspect-ratio: 3 / 2;
+}
+.swatch-info {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: var(--space-2);
+	padding: var(--space-2) var(--space-3);
+	font-size: var(--font-small);
+	margin: 0;
+}
+.swatch-label {
+	color: var(--color-text-primary);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.swatch-hex {
+	color: var(--color-text-secondary);
+	font-family: var(--font-mono);
+	flex-shrink: 0;
+}
+.swatch-dot {
+	display: inline-block;
+	width: var(--space-3);
+	height: var(--space-3);
+	border-radius: var(--radius-sm);
+	border: 1px solid rgba(0, 0, 0, 0.08); /* 浅色(如米白)在纸白卡上仍可辨 */
+}
+</style>

@@ -1,0 +1,51 @@
+---
+// 面包屑导航:DocLayout(通用详情页)与 assets 子类瀑布页共用(V1.1 Task 14 抽取,
+// 此前 DocLayout 与瀑布页各持一份同构实现)
+// 契约:href 空/省略 = 当前页(渲染 aria-current="page" 的 span,非链接)
+interface Crumb {
+	label: string
+	href?: string
+}
+interface Props {
+	items: Crumb[]
+}
+const { items } = Astro.props
+import { withBase } from '@/lib/base'
+---
+
+<nav class="breadcrumb container" aria-label="面包屑">
+	{items.map((item, i) => (
+		<>
+			{i > 0 && <span class="sep" aria-hidden="true">/</span>}
+			{item.href ? (
+				<a href={withBase(item.href)}>{item.label}</a>
+			) : (
+				<span aria-current="page">{item.label}</span>
+			)}
+		</>
+	))}
+</nav>
+
+<style>
+/* 样式自 DocLayout 迁移;max-width/margin/左右 padding 仍走 .container 工具类 */
+.breadcrumb {
+	padding-top: var(--space-4);
+	padding-bottom: var(--space-4);
+	font-size: var(--font-small);
+	color: var(--color-text-secondary);
+}
+.breadcrumb a {
+	color: var(--color-text-primary);
+	text-decoration: none;
+}
+.breadcrumb a:hover,
+.breadcrumb a:focus-visible {
+	text-decoration: underline;
+}
+.breadcrumb .sep {
+	margin: 0 var(--space-2);
+}
+.breadcrumb [aria-current='page'] {
+	color: var(--color-text-secondary);
+}
+</style>

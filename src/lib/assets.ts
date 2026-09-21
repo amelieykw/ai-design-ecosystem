@@ -16,7 +16,7 @@ export const SUBCLASSES = [
   //   prompts    → prompt + model(即梦|MJ|FLUX|其他)+ negative
   { key: 'colors', name: '配色', desc: '品牌色板、主题色系与用色契约' },
   { key: 'fonts', name: '字体', desc: '字族搭配、字重阶梯与授权说明' },
-  { key: 'layout', name: '排版', desc: '字号阶与栅格系统' },
+  { key: 'layout', name: '排版', desc: '字号阶梯与栅格系统' },
   { key: 'motion', name: '动效', desc: '缓动曲线、时长规范与适用场景' },
   { key: 'textures', name: '纹理', desc: '噪点、渐变、图案等表面质感' },
   { key: 'styles', name: '风格', desc: '视觉风格参考与整体气质定调' },

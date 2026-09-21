@@ -1,0 +1,187 @@
+---
+// 素材详情页:/assets/<subclass>/<id>/,套 V1.0 通用 DocLayout(含站级 Header/Footer)
+// 主展示区按子类"存在才渲染"(渐进补全契约):colors→Swatch 大色卡,components→代码块,
+// styles→关联资产列表;无专属结构化数据时显示 V2 占位,正文 md 始终渲染
+import { getCollection, render } from 'astro:content'
+import DocLayout from '@/layouts/DocLayout.astro'
+import Swatch from '@/components/assets/Swatch.astro'
+import { SUBCLASSES, collectionOf } from '@/lib/assets'
+
+export async function getStaticPaths() {
+	// 双层展开:SUBCLASSES × 各自 collection 条目。集合为空(填数据前,Task 24)时
+	// 对应子类产出 0 条路径 —— 8 集合全空则本路由整体 0 页,build 页数不变,属预期
+	const SLUG_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/
+	const grouped = await Promise.all(
+		SUBCLASSES.map(async (sc) => {
+			const entries = await getCollection(collectionOf(sc))
+			return entries.map((entry) => {
+				// 同 handbook/[id].astro:id 由文件名决定,regex 是数据 bug 防御,
+				// 触发即抛错阻断 build;前缀带 collection 便于定位是哪个子类的条目
+				if (!SLUG_RE.test(entry.id)) {
+					throw new Error(`[${collectionOf(sc)}] 不合规 id 阻断 build: ${entry.id}(需 kebab-case)`)
+				}
+				return {
+					params: { subclass: sc.key, id: entry.id },
+					props: { sc, entry },
+				}
+			})
+		})
+	)
+	return grouped.flat()
+}
+
+const { sc, entry } = Astro.props
+const { Content } = await render(entry)
+
+// 子类专属结构化字段:8 个集合 schema 各异,entry.data 是 union,
+// 用 'in' 守卫按字段名收窄(palette 仅 colors 声明,余同理),禁手写 any
+const palette = 'palette' in entry.data ? entry.data.palette : undefined
+const linkedAssets = 'linkedAssets' in entry.data ? entry.data.linkedAssets : undefined
+const code = 'code' in entry.data ? entry.data.code : undefined
+
+const hasShowcase =
+	(palette?.length ?? 0) > 0 || (linkedAssets?.length ?? 0) > 0 || (code !== undefined && code.length > 0)
+---
+
+<DocLayout
+	title={`${entry.data.title} · ${sc.name} · 灵感资产库`}
+	breadcrumb={[
+		{ label: '首页', href: '/' },
+		{ label: '灵感库', href: '/assets/' },
+		{ label: sc.name, href: `/assets/${sc.key}/` },
+		{ label: entry.data.title },
+	]}
+>
+	<header class="doc-header">
+		<div class="meta-row">
+			<span class="subclass-badge">{sc.name}</span>
+			<span class="asset-tags">
+				{entry.data.tags.slice(0, 3).map((t) => <span class="tag">#{t}</span>)}
+			</span>
+			<time class="added-at" datetime={entry.data.addedAt}>{entry.data.addedAt}</time>
+		</div>
+		<h1>{entry.data.title}</h1>
+		<p class="desc">{entry.data.description}</p>
+	</header>
+
+	<section class="showcase" aria-label="素材展示区">
+		{palette && palette.length > 0 && (
+			<div class="swatch-grid">
+				{palette.map((c) => (
+					<Swatch hex={c.hex} name={c.name} role={c.role} variant="tile" />
+				))}
+			</div>
+		)}
+		{code && code.length > 0 && (
+			<pre class="code-block"><code>{code}</code></pre>
+		)}
+		{linkedAssets && linkedAssets.length > 0 && (
+			<div class="linked-assets">
+				<h2>关联资产</h2>
+				{/* linkedAssets 的引用格式未定(跨子类引用需子类前缀),链接契约 Task 24 填数据时定;
+				    先渲染纯文本列表,不 fabricated 链接防 404 */}
+				<ul>
+					{linkedAssets.map((id) => <li>{id}</li>)}
+				</ul>
+			</div>
+		)}
+		{!hasShowcase && <p class="placeholder">该子类专属展示 V2 上线。</p>}
+	</section>
+
+	<section class="doc-body" aria-label="正文">
+		<Content />
+	</section>
+
+	<footer class="tags-row" aria-label="标签">
+		{entry.data.tags.map((t) => <span class="tag">#{t}</span>)}
+	</footer>
+</DocLayout>
+
+<style>
+.doc-header {
+	margin-bottom: var(--space-8);
+}
+.meta-row {
+	display: flex;
+	gap: var(--space-3);
+	align-items: center;
+	margin-bottom: var(--space-4);
+	font-size: var(--font-small);
+	flex-wrap: wrap;
+}
+.subclass-badge {
+	color: var(--color-text-on-dark);
+	background: var(--color-text-primary);
+	padding: 2px var(--space-2);
+	border-radius: var(--radius-sm);
+}
+.asset-tags {
+	display: flex;
+	gap: var(--space-2);
+	flex-wrap: wrap;
+}
+.tag {
+	color: var(--color-text-secondary);
+}
+.added-at {
+	color: var(--color-text-secondary);
+}
+.doc-header h1 {
+	font-size: var(--font-h1);
+	margin-bottom: var(--space-4);
+}
+.desc {
+	font-size: var(--font-h4);
+	color: var(--color-text-secondary);
+	margin-bottom: 0;
+}
+/* 主展示区:与 header、正文间各留一档间距 */
+.showcase {
+	margin-bottom: var(--space-8);
+}
+.swatch-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: var(--space-4);
+}
+.code-block {
+	margin: 0;
+}
+/* pre 默认样式由 DocLayout .doc :global(pre) 提供,此处仅去多余底边距 */
+.showcase :global(pre.code-block) {
+	margin-bottom: 0;
+}
+.linked-assets h2 {
+	font-size: var(--font-h4);
+	margin: 0 0 var(--space-3);
+}
+.linked-assets ul {
+	padding-left: var(--space-6);
+	margin: 0;
+}
+.linked-assets li {
+	margin-bottom: var(--space-2);
+	line-height: 1.8;
+}
+.placeholder {
+	color: var(--color-text-secondary);
+	font-size: var(--font-body);
+	border: 1px dashed var(--color-border);
+	border-radius: var(--radius-md);
+	padding: var(--space-6);
+	margin: 0;
+	background: var(--color-surface);
+}
+.doc-body {
+	margin-bottom: var(--space-8);
+}
+/* 正文 md 由 ## 起步,标题/段落/pre 样式由 DocLayout .doc :global(...) 提供 */
+.tags-row {
+	display: flex;
+	gap: var(--space-3);
+	flex-wrap: wrap;
+	margin-top: var(--space-12);
+	padding-top: var(--space-6);
+	border-top: 1px solid var(--color-border);
+}
+</style>

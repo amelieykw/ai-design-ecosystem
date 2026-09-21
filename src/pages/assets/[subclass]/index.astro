@@ -5,6 +5,8 @@ import { getCollection } from 'astro:content'
 import Header from '@/components/nav/Header.astro'
 import Footer from '@/components/nav/Footer.astro'
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import Breadcrumb from '@/components/nav/Breadcrumb.astro'
+import Swatch from '@/components/assets/Swatch.astro'
 import { SUBCLASSES, collectionOf } from '@/lib/assets'
 import { withBase } from '@/lib/base'
 
@@ -20,13 +22,13 @@ const items = (await getCollection(collectionOf(sc))).sort(
 
 <BaseLayout title={`${sc.name} · 灵感资产库`}>
 	<Header />
-	<nav class="breadcrumb container" aria-label="面包屑">
-		<a href={withBase('/')}>首页</a>
-		<span class="sep" aria-hidden="true">/</span>
-		<a href={withBase('/assets/')}>灵感库</a>
-		<span class="sep" aria-hidden="true">/</span>
-		<span aria-current="page">{sc.name}</span>
-	</nav>
+	<Breadcrumb
+		items={[
+			{ label: '首页', href: '/' },
+			{ label: '灵感库', href: '/assets/' },
+			{ label: sc.name },
+		]}
+	/>
 	<header class="page-header container">
 		<h1>{sc.name}</h1>
 		<span class="count">{items.length} 条素材</span>
@@ -42,6 +44,14 @@ const items = (await getCollection(collectionOf(sc))).sort(
 		)}
 		{items.map((item) => (
 			<a href={withBase(`/assets/${sc.key}/${item.id}/`)} class="asset-card card-link">
+				{/* 配色子类卡片:palette 存在时显示前 4 个色点(简版色点,大色卡在详情页) */}
+				{'palette' in item.data && item.data.palette && (
+					<div class="palette-dots" aria-hidden="true">
+						{item.data.palette.slice(0, 4).map((c) => (
+							<Swatch hex={c.hex} name={c.name} role={c.role} variant="dot" />
+						))}
+					</div>
+				)}
 				<h2 class="asset-name">{item.data.title}</h2>
 				<p class="asset-desc">{item.data.description}</p>
 				<div class="asset-meta">
@@ -57,27 +67,7 @@ const items = (await getCollection(collectionOf(sc))).sort(
 </BaseLayout>
 
 <style>
-/* 面包屑复用 DocLayout 同款结构与样式(本页非 doc 正文,自建实现) */
-.breadcrumb {
-	padding-top: var(--space-4);
-	padding-bottom: var(--space-4);
-	font-size: var(--font-small);
-	color: var(--color-text-secondary);
-}
-.breadcrumb a {
-	color: var(--color-text-primary);
-	text-decoration: none;
-}
-.breadcrumb a:hover,
-.breadcrumb a:focus-visible {
-	text-decoration: underline;
-}
-.breadcrumb .sep {
-	margin: 0 var(--space-2);
-}
-.breadcrumb [aria-current='page'] {
-	color: var(--color-text-secondary);
-}
+/* 面包屑样式在 Breadcrumb.astro 组件内(共用);本页仅保留列表专属样式 */
 .page-header {
 	padding-top: var(--space-8);
 	padding-bottom: 0;
@@ -108,6 +98,12 @@ const items = (await getCollection(collectionOf(sc))).sort(
 	break-inside: avoid;
 	margin-bottom: var(--space-4);
 	padding: var(--space-4);
+}
+/* 配色卡片色点行:色块本体样式在 Swatch.astro(共用),此处仅排布 */
+.palette-dots {
+	display: flex;
+	gap: var(--space-1);
+	margin-bottom: var(--space-2);
 }
 /* 空态卡:非链接,不给 hover 抬升;仅描边卡片式说明,不引导跳转 */
 .empty-card {
